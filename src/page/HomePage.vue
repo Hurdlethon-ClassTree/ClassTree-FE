@@ -1,158 +1,142 @@
 <template>
-  <div class="main-page">
-    <div class="left-bar">
-      <router-link to="/ask" class="link">
-        <div class="left-bar-menu">질문하기</div>
-      </router-link>
-      <div class="left-bar-menu">나의 강의실</div>
-      <div class="left-bar-menu">미답변 질문</div>
-      <router-link to="/myquestion" class="link">
-        <div class="left-bar-menu">나의 질문</div>
-      </router-link>
-      <router-link to="/searchhistory" class="link">
-        <div class="left-bar-menu">검색기록</div>
-      </router-link>
+  <div class="body">
+    <div class="banner">
+      <div class="banner-title">ClassTree에 오신 것을 환영합니다!</div>
+      <div>수업에서 여쭤보기 어려웠던 질문들 익명으로 질문하세요!</div>
     </div>
-    <div class="body">
-      <div class="banner">
-        <div class="banner-title">ClassTree에 오신 것을 환영합니다!</div>
-        <div>수업에서 여쭤보기 어려웠던 질문들 익명으로 질문하세요!</div>
-      </div>
-      <div class="home-content">
-        <div class="main-title">누구보다 먼저 답변을 달아보세요!</div>
-        <div class="main-detail">다른 학생들은 이런 질문을 하고 있어요</div>
-        <div class="nonans-questions">
-          <div class="nonans-question-row">
-            <div class="nonans-question">
-              <div class="nonans-question-subject-name">과목명</div>
-              <div class="nonans-question-body">
-                <div class="nonans-question-title">제목</div>
-                <div class="nonans-question-tags">
-                  <div class="nonans-question-tag">과목코드</div>
-                  <div class="nonans-question-tag">교수명</div>
-                </div>
-              </div>
-            </div>
-            <div class="nonans-question">
-              <div class="nonans-question-subject-name">과목명</div>
-              <div class="nonans-question-body">
-                <div class="nonans-question-title">제목</div>
-                <div class="nonans-question-tags">
-                  <div class="nonans-question-tag">과목코드</div>
-                  <div class="nonans-question-tag">교수명</div>
-                </div>
-              </div>
-            </div>
-            <div class="nonans-question">
-              <div class="nonans-question-subject-name">과목명</div>
-              <div class="nonans-question-body">
-                <div class="nonans-question-title">제목</div>
-                <div class="nonans-question-tags">
-                  <div class="nonans-question-tag">과목코드</div>
-                  <div class="nonans-question-tag">교수명</div>
-                </div>
+    <div class="home-content">
+      <div class="main-title">누구보다 먼저 답변을 달아보세요!</div>
+      <div class="main-detail">다른 학생들은 이런 질문을 하고 있어요</div>
+      <div class="nonans-questions">
+        <div class="nonans-question-row">
+          <div class="nonans-question">
+            <div class="nonans-question-subject-name">과목명</div>
+            <div class="nonans-question-body">
+              <div class="nonans-question-title">제목</div>
+              <div class="nonans-question-tags">
+                <div class="nonans-question-tag">과목코드</div>
+                <div class="nonans-question-tag">교수명</div>
               </div>
             </div>
           </div>
-          <div class="nonans-question-row">
-            <div class="nonans-question">
-              <div class="nonans-question-subject-name">과목명</div>
-              <div class="nonans-question-body">
-                <div class="nonans-question-title">제목</div>
-                <div class="nonans-question-tags">
-                  <div class="nonans-question-tag">과목코드</div>
-                  <div class="nonans-question-tag">교수명</div>
-                </div>
+          <div class="nonans-question">
+            <div class="nonans-question-subject-name">과목명</div>
+            <div class="nonans-question-body">
+              <div class="nonans-question-title">제목</div>
+              <div class="nonans-question-tags">
+                <div class="nonans-question-tag">과목코드</div>
+                <div class="nonans-question-tag">교수명</div>
               </div>
             </div>
-            <div class="nonans-question">
-              <div class="nonans-question-subject-name">과목명</div>
-              <div class="nonans-question-body">
-                <div class="nonans-question-title">제목</div>
-                <div class="nonans-question-tags">
-                  <div class="nonans-question-tag">과목코드</div>
-                  <div class="nonans-question-tag">교수명</div>
-                </div>
-              </div>
-            </div>
-            <div class="nonans-question">
-              <div class="nonans-question-subject-name">과목명</div>
-              <div class="nonans-question-body">
-                <div class="nonans-question-title">제목</div>
-                <div class="nonans-question-tags">
-                  <div class="nonans-question-tag">과목코드</div>
-                  <div class="nonans-question-tag">교수명</div>
-                </div>
+          </div>
+          <div class="nonans-question">
+            <div class="nonans-question-subject-name">과목명</div>
+            <div class="nonans-question-body">
+              <div class="nonans-question-title">제목</div>
+              <div class="nonans-question-tags">
+                <div class="nonans-question-tag">과목코드</div>
+                <div class="nonans-question-tag">교수명</div>
               </div>
             </div>
           </div>
         </div>
-        <button class="load-more">+ 더보기</button>
-      </div>
-
-
-      <div class="home-content">
-        <div class="main-title">강의실에 새 질문이 달렸어요!</div>
-        <div class="new-questions">
-          <div class="new-question">
-            <div class="new-question-subject-name">과목명</div>
-            <div class="new-question-professor-name">교수명</div>
-            <div class="new-question-subject-code">과목코드</div>
+        <div class="nonans-question-row">
+          <div class="nonans-question">
+            <div class="nonans-question-subject-name">과목명</div>
+            <div class="nonans-question-body">
+              <div class="nonans-question-title">제목</div>
+              <div class="nonans-question-tags">
+                <div class="nonans-question-tag">과목코드</div>
+                <div class="nonans-question-tag">교수명</div>
+              </div>
+            </div>
           </div>
-          <div class="new-question">
-            <div class="new-question-subject-name">과목명</div>
-            <div class="new-question-professor-name">교수명</div>
-            <div class="new-question-subject-code">과목코드</div>
+          <div class="nonans-question">
+            <div class="nonans-question-subject-name">과목명</div>
+            <div class="nonans-question-body">
+              <div class="nonans-question-title">제목</div>
+              <div class="nonans-question-tags">
+                <div class="nonans-question-tag">과목코드</div>
+                <div class="nonans-question-tag">교수명</div>
+              </div>
+            </div>
           </div>
-          <div class="new-question">
-            <div class="new-question-subject-name">과목명</div>
-            <div class="new-question-professor-name">교수명</div>
-            <div class="new-question-subject-code">과목코드</div>
+          <div class="nonans-question">
+            <div class="nonans-question-subject-name">과목명</div>
+            <div class="nonans-question-body">
+              <div class="nonans-question-title">제목</div>
+              <div class="nonans-question-tags">
+                <div class="nonans-question-tag">과목코드</div>
+                <div class="nonans-question-tag">교수명</div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-
-      <div class="user-info-area">
-        <div class="user-info-body">
-          <div class="user-icon"></div>
-          <div class="user-info">
-            <div class="user-name">이용자 별명</div>
-            <div class="user-history">N년 전부터 활동 중</div>
-          </div>
-        </div>
-        <button class="user-info-modify-btn">프로필 수정하기</button>
-      </div>
-
-      <div class="home-content">
-        <div class="main-title">나의 미답변 질문 목록</div>
-        <div class="main-detail">당신의 답변을 기다리고 있어요!</div>
-
-        <div class="question-list">
-        <div class="question-item">
-          질문
-          <span class="subject">수업 이름</span>
-        </div>
-        <div class="question-item">
-          질문
-          <span class="subject">수업 이름</span>
-        </div>
-        <div class="question-item">
-          질문제목
-          <span class="subject">수업 이름</span>
-        </div>
-        <div class="question-item">
-          lorem ipsum
-          <span class="subject">수업 이름</span>
-        </div>
-        <div class="question-item">
-          질문
-          <span class="subject">수업 이름</span>
         </div>
       </div>
       <button class="load-more">+ 더보기</button>
-      </div>
-
     </div>
+
+    <div class="home-content">
+      <div class="main-title">강의실에 새 질문이 달렸어요!</div>
+      <div class="new-questions">
+        <div class="new-question">
+          <div class="new-question-subject-name">과목명</div>
+          <div class="new-question-professor-name">교수명</div>
+          <div class="new-question-subject-code">과목코드</div>
+        </div>
+        <div class="new-question">
+          <div class="new-question-subject-name">과목명</div>
+          <div class="new-question-professor-name">교수명</div>
+          <div class="new-question-subject-code">과목코드</div>
+        </div>
+        <div class="new-question">
+          <div class="new-question-subject-name">과목명</div>
+          <div class="new-question-professor-name">교수명</div>
+          <div class="new-question-subject-code">과목코드</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="user-info-area">
+      <div class="user-info-body">
+        <div class="user-icon"></div>
+        <div class="user-info">
+          <div class="user-name">이용자 별명</div>
+          <div class="user-history">N년 전부터 활동 중</div>
+        </div>
+      </div>
+      <button class="user-info-modify-btn">프로필 수정하기</button>
+    </div>
+
+    <div class="home-content">
+      <div class="main-title">나의 미답변 질문 목록</div>
+      <div class="main-detail">당신의 답변을 기다리고 있어요!</div>
+
+      <div class="question-list">
+      <div class="question-item">
+        질문
+        <span class="subject">수업 이름</span>
+      </div>
+      <div class="question-item">
+        질문
+        <span class="subject">수업 이름</span>
+      </div>
+      <div class="question-item">
+        질문제목
+        <span class="subject">수업 이름</span>
+      </div>
+      <div class="question-item">
+        lorem ipsum
+        <span class="subject">수업 이름</span>
+      </div>
+      <div class="question-item">
+        질문
+        <span class="subject">수업 이름</span>
+      </div>
+    </div>
+    <button class="load-more">+ 더보기</button>
+    </div>
+
   </div>
 </template>
 
@@ -161,22 +145,6 @@
 </script>
 
 <style scoped>
-.left-bar {
-  font-size: 0.85rem;
-  background-color: rgb(235, 235, 235);
-  width: 10.5rem;
-  position: fixed;
-  padding: 1rem 1rem;
-  height: 100%;
-}
-.left-bar-menu {
-  margin-bottom: 1.2rem;
-}
-.body {
-  position: absolute;
-  left: 12.5rem;
-  width: calc(100% - 12.5rem);
-}
 .banner {
   background-color: rgb(102, 187, 106);
   color: white;
