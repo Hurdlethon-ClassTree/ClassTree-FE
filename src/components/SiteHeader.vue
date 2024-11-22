@@ -37,6 +37,7 @@ export default {
 
 <style scoped>
 header {
+  background-color: white;
   display: flex;
   align-items: center;
   height: 3.5rem;
