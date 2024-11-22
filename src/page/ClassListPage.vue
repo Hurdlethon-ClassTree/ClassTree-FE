@@ -55,7 +55,7 @@ export default {
   border-bottom: 1px solid rgb(27, 145, 27);
 }
 .class {
-  margin: 0 3.5rem;
+  margin: 0 2.5rem;
   padding: 2rem 0 3.5rem;
   background-color: rgb(242, 242, 242);
   border-radius: 2rem;

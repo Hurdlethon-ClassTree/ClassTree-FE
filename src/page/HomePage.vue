@@ -286,8 +286,8 @@ h1 {
   background-color: transparent;
   border: 1px solid #ddd;
   border-radius: 5px;
-  padding: 0.8rem 1rem;
-  font-size: 0.8rem;
+  padding: 0.5rem 0.6rem;
+  font-size: 0.85rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

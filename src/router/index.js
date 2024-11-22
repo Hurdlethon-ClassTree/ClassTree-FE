@@ -59,9 +59,14 @@ const router = createRouter({
       component: () => import('../page/MyQuestionPage.vue')
     },
     {
-      path: '/lectureList',
-      name: 'lectureList',
-      component: () => import('../page/LectureList.vue')
+      path: '/nonans',
+      name: 'nonansquestion',
+      component: () => import('../page/NonansPage.vue')
+    },
+    {
+      path: '/myclass',
+      name: 'myclass',
+      component: () => import('../page/MyClass.vue')
     }
   ],
 });

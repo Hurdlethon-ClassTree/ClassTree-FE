@@ -3,8 +3,12 @@
     <router-link to="/ask" class="link">
       <div class="left-bar-menu">질문하기</div>
     </router-link>
-    <div class="left-bar-menu">나의 강의실</div>
-    <div class="left-bar-menu">미답변 질문</div>
+    <router-link to="/myclass" class="link">
+      <div class="left-bar-menu">나의 강의실</div>
+    </router-link>
+    <router-link to="/nonans" class="link">
+      <div class="left-bar-menu">미답변 질문</div>
+    </router-link>
     <router-link to="/myquestion" class="link">
       <div class="left-bar-menu">나의 질문</div>
     </router-link>
