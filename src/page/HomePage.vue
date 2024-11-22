@@ -4,11 +4,14 @@
       <router-link to="/ask" class="link">
         <div class="left-bar-menu">질문하기</div>
       </router-link>
-      <router-link to="/class" class="link">
-        <div class="left-bar-menu">나의 강의실</div>
-      </router-link>
+      <div class="left-bar-menu">나의 강의실</div>
       <div class="left-bar-menu">미답변 질문</div>
-      <div class="left-bar-menu">나의 질문</div>
+      <router-link to="/myquestion" class="link">
+        <div class="left-bar-menu">나의 질문</div>
+      </router-link>
+      <router-link to="/searchhistory" class="link">
+        <div class="left-bar-menu">검색기록</div>
+      </router-link>
     </div>
     <div class="body">
       <div class="banner">
@@ -84,7 +87,7 @@
             </div>
           </div>
         </div>
-        <button class="nonans-question-showmore">+ 더보기</button>
+        <button class="load-more">+ 더보기</button>
       </div>
 
 
@@ -109,20 +112,44 @@
         </div>
       </div>
 
-      <div class="user-info">
-        <div>
+      <div class="user-info-area">
+        <div class="user-info-body">
           <div class="user-icon"></div>
-          <div>
-            <div>이용자 별명</div>
-            <div>N년 전부터 활동 중</div>
+          <div class="user-info">
+            <div class="user-name">이용자 별명</div>
+            <div class="user-history">N년 전부터 활동 중</div>
           </div>
         </div>
-        <button>프로필 수정하기</button>
+        <button class="user-info-modify-btn">프로필 수정하기</button>
       </div>
 
       <div class="home-content">
         <div class="main-title">나의 미답변 질문 목록</div>
         <div class="main-detail">당신의 답변을 기다리고 있어요!</div>
+
+        <div class="question-list">
+        <div class="question-item">
+          질문
+          <span class="subject">수업 이름</span>
+        </div>
+        <div class="question-item">
+          질문
+          <span class="subject">수업 이름</span>
+        </div>
+        <div class="question-item">
+          질문제목
+          <span class="subject">수업 이름</span>
+        </div>
+        <div class="question-item">
+          lorem ipsum
+          <span class="subject">수업 이름</span>
+        </div>
+        <div class="question-item">
+          질문
+          <span class="subject">수업 이름</span>
+        </div>
+      </div>
+      <button class="load-more">+ 더보기</button>
       </div>
 
     </div>
@@ -211,13 +238,14 @@
   margin-right: 0.5rem;
   border-radius: 0.1rem;
 }
-.nonans-question-showmore {
+.load-more {
   width: 100%;
-  height: 2rem;
+  height: 2.3rem;
   color: rgb(99, 99, 99);
   background-color: white;
   border: 1px solid rgb(99, 99, 99);
   border-radius: 0.3rem;
+  margin-top: 1rem
 }
 .home-content {
   border-bottom: 1px solid rgb(230, 230, 230);
@@ -247,5 +275,93 @@
 }
 .new-questions {
   margin-top: 2rem;
+}
+
+/*user-info-modify*/
+.user-info-area {
+  height: 10rem;
+  align-items: center;
+  padding: 0 2rem;
+  display: flex;
+  background-color: rgb(130, 177, 132);
+}
+.user-icon {
+  width: 6rem;
+  height: 6rem;
+  background-color: rgba(217, 217, 217, 0.5);
+  border-radius: 4rem;
+  margin-right: 1.5rem;
+}
+.user-info-modify-btn {
+  background-color: black;
+  height: 2.3rem;
+  color: white;
+  border: none;
+  padding: 0 0.7rem;
+  border-radius: 0.3rem;
+  right: 3rem;
+  position: absolute;
+}
+.user-info-body {
+  display: flex;
+  align-content: center;
+}
+.user-name {
+  margin-top: 1.5rem;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+.user-history {
+  color: white;
+  font-size: 0.9rem;
+}
+
+/*미답변 질문 목록*/
+
+.container {
+  width: 90%;
+  max-width: 800px;
+  text-align: center;
+}
+
+h1 {
+  font-size: 1.5rem;
+  margin-bottom: 0.8rem;
+}
+
+.subtitle {
+  color: #666;
+  margin-bottom: 1.3rem;
+}
+
+.question-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.question-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: transparent;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 0.8rem 1rem;
+  font-size: 0.8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.question-item .subject {
+  color: #666;
+  margin-left: 0.6rem;
+  font-size: 0.8rem;
+}
+.subject {
+  padding-left: 1rem;
+  border-left: 1px solid rgb(198, 198, 198);
 }
 </style>

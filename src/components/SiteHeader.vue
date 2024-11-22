@@ -7,7 +7,7 @@
         <router-link to="/" class="link">
         <div class="header-menu-item">홈</div>
         </router-link>
-        <router-link to="/signup" class="link">
+        <router-link to="/classlist" class="link">
           <div class="header-menu-item">개설과목</div>
         </router-link>
         <router-link to="/signup" class="link">

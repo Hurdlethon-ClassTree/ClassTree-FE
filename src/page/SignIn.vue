@@ -35,7 +35,7 @@
 }
 .signin-banner {
   align-content: center;
-  padding-left: 10rem;
+  padding-left: 5rem;
 }
 label {
   margin-bottom: 0.5rem;

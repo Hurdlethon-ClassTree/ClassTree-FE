@@ -4,18 +4,18 @@
       가입하기
     </div>
     <div class="signup-input-cover">
-      <label>ID</label>
+      <label class="label">ID</label>
       <div class="signup-input-area">
         <input type="text" placeholder="생성할 아이디를 입력해 주세요" />
         <button class="signup-input-btn">중복검사</button>
       </div>
-      <label>Password</label>
+      <label class="label">Password</label>
       <input class="signup-input-area" type="text" placeholder="비밀번호를 입력해 주세요" />
-      <label>Confirm Password</label>
+      <label class="label">Confirm Password</label>
       <input class="signup-input-area" type="text" placeholder="비밀번호를 다시 입력해 주세요" />
-      <label>Email</label>
+      <label class="label">Email</label>
       <input class="signup-input-area" type="text" placeholder="알림 받을 이메일 주소를 입력해 주세요" />
-      <label>학교 인증하기</label>
+      <label class="label">학교 인증하기</label>
       <div class="signup-input-area">
         <input type="text" placeholder="학교 이메일 주소를 입력해 주세요" />
         <button class="signup-input-btn">인증 번호 발송하기</button>
@@ -72,11 +72,6 @@ input {
 }
 .signup {
   margin: 0 10rem 7rem;
-}
-label {
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-  font-weight: bold;
 }
 input:focus {
   outline: none;
