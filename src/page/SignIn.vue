@@ -1,20 +1,22 @@
 <template>
   <div class="signin">
     <div class="signin-banner">
-
+      <h1>로그인</h1>
     </div>
-    <div class="signin-form">
-      <div class="input-box">
-        <label>ID</label>
-        <input type="text" placeholder="아이디를 입력해 주세요" />
-      </div>
-      <div class="input-box">
-        <label>Password</label>
-        <input type="text" placeholder="비밀번호를 입력해 주세요" />
-      </div>
-      <div class="login-btn-cover">
-        <button class="search-account-btn">아이디/비밀번호 찾기</button>
-        <button class="login-btn">로그인</button>
+    <div class="signin-form-container">
+      <div class="signin-form">
+        <div class="input-box">
+          <label>ID</label>
+          <input type="text" placeholder="아이디를 입력해 주세요" />
+        </div>
+        <div class="input-box">
+          <label>Password</label>
+          <input type="text" placeholder="비밀번호를 입력해 주세요" />
+        </div>
+        <div class="login-btn-cover">
+          <button class="search-account-btn">아이디/비밀번호 찾기</button>
+          <button class="login-btn">로그인</button>
+        </div>
       </div>
     </div>
   </div>
@@ -27,9 +29,13 @@
 <style scoped>
 .signin {
   width: 100%;
-  height: 100%;
+  height: calc(100vh - 3.5rem - 1px);
   display: grid;
   grid-template-columns: 1fr 1fr;
+}
+.signin-banner {
+  align-content: center;
+  padding-left: 10rem;
 }
 label {
   margin-bottom: 0.5rem;
@@ -38,13 +44,18 @@ label {
 }
 .signin-form {
   width: 25rem;
-  margin-top: 3rem;
+}
+.signin-form-container {
   margin-left: 3rem;
+  align-content: center;
 }
 .input-box {
   display: flex;
   flex-direction: column;
   margin-bottom: 3rem;
+}
+.input-box > input:focus {
+  outline: none;
 }
 input {
   height: 2rem;
