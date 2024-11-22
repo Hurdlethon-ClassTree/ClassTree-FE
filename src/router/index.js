@@ -6,37 +6,37 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: () => import('../components/HomePage.vue'),
+      component: () => import('../page/HomePage.vue'),
     },
     {
       path: '/signin',
       name: 'signin',
-      component: () => import('../components/SignIn.vue'),
+      component: () => import('../page/SignIn.vue'),
     },
     {
       path: '/signup',
       name: 'signup',
-      component: () => import('../components/SignUp.vue'),
+      component: () => import('../page/SignUp.vue'),
     },
     {
       path: '/ask',
       name: 'ask',
-      component: () => import('../components/AskPage.vue'),
+      component: () => import('../page/AskPage.vue'),
     },
     {
       path: '/post',
       name: 'post',
-      component: () => import('../components/PostPage.vue')
+      component: () => import('../page/PostPage.vue')
     },
     {
       path: '/setting',
       name:'setting',
-      component: () => import('../components/SettingPage.vue'),
+      component: () => import('../page/SettingPage.vue'),
     },
     {
       path: '/class',
       name: 'class',
-      component: () => import('../components/ClassListPage.vue')
+      component: () => import('../page/ClassListPage.vue')
     }
   ],
 });
