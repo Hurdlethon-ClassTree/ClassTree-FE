@@ -25,6 +25,10 @@ export default {
         { id: 2, name: "과목명2", professor: "교수 이름2" },
         { id: 3, name: "과목명3", professor: "교수 이름3" },
         { id: 4, name: "과목명4", professor: "교수 이름4" },
+        { id: 1, name: "과목명1", professor: "교수 이름1" },
+        { id: 2, name: "과목명2", professor: "교수 이름2" },
+        { id: 3, name: "과목명3", professor: "교수 이름3" },
+        { id: 4, name: "과목명4", professor: "교수 이름4" },
       ],
     };
   },
@@ -42,9 +46,10 @@ export default {
 }
 .class-row {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(4, 1fr);
   margin-bottom: 2rem;
   padding-bottom: 2rem;
+  gap: 20px;
 }
 .class-row:not(:last-child) {
   border-bottom: 1px solid rgb(27, 145, 27);
