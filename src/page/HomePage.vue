@@ -8,66 +8,20 @@
       <div class="main-title">누구보다 먼저 답변을 달아보세요!</div>
       <div class="main-detail">다른 학생들은 이런 질문을 하고 있어요</div>
       <div class="nonans-questions">
-        <div class="nonans-question-row">
-          <div class="nonans-question">
-            <div class="nonans-question-subject-name">과목명</div>
-            <div class="nonans-question-body">
-              <div class="nonans-question-title">제목</div>
-              <div class="nonans-question-tags">
-                <div class="nonans-question-tag">과목코드</div>
-                <div class="nonans-question-tag">교수명</div>
-              </div>
-            </div>
+        <div class="nonans-question-card" v-for="question in 4" :key="question">
+          <div class="nonans-question-subject-name">
+            {{ nonansQ[0].lecture_name }}
           </div>
-          <div class="nonans-question">
-            <div class="nonans-question-subject-name">과목명</div>
-            <div class="nonans-question-body">
-              <div class="nonans-question-title">제목</div>
-              <div class="nonans-question-tags">
-                <div class="nonans-question-tag">과목코드</div>
-                <div class="nonans-question-tag">교수명</div>
-              </div>
+          <div class="nonans-question-body">
+            <div class="nonans-question-title">
+              {{ nonansQ[0].title }}
             </div>
-          </div>
-          <div class="nonans-question">
-            <div class="nonans-question-subject-name">과목명</div>
-            <div class="nonans-question-body">
-              <div class="nonans-question-title">제목</div>
-              <div class="nonans-question-tags">
-                <div class="nonans-question-tag">과목코드</div>
-                <div class="nonans-question-tag">교수명</div>
+            <div class="nonans-question-tags">
+              <div class="nonans-question-tag">
+                {{ nonansQ[0].code }}
               </div>
-            </div>
-          </div>
-        </div>
-        <div class="nonans-question-row">
-          <div class="nonans-question">
-            <div class="nonans-question-subject-name">과목명</div>
-            <div class="nonans-question-body">
-              <div class="nonans-question-title">제목</div>
-              <div class="nonans-question-tags">
-                <div class="nonans-question-tag">과목코드</div>
-                <div class="nonans-question-tag">교수명</div>
-              </div>
-            </div>
-          </div>
-          <div class="nonans-question">
-            <div class="nonans-question-subject-name">과목명</div>
-            <div class="nonans-question-body">
-              <div class="nonans-question-title">제목</div>
-              <div class="nonans-question-tags">
-                <div class="nonans-question-tag">과목코드</div>
-                <div class="nonans-question-tag">교수명</div>
-              </div>
-            </div>
-          </div>
-          <div class="nonans-question">
-            <div class="nonans-question-subject-name">과목명</div>
-            <div class="nonans-question-body">
-              <div class="nonans-question-title">제목</div>
-              <div class="nonans-question-tags">
-                <div class="nonans-question-tag">과목코드</div>
-                <div class="nonans-question-tag">교수명</div>
+              <div class="nonans-question-tag">
+                {{ nonansQ[0].professor }}
               </div>
             </div>
           </div>
@@ -79,20 +33,16 @@
     <div class="home-content">
       <div class="main-title">강의실에 새 질문이 달렸어요!</div>
       <div class="new-questions">
-        <div class="new-question">
-          <div class="new-question-subject-name">과목명</div>
-          <div class="new-question-professor-name">교수명</div>
-          <div class="new-question-subject-code">과목코드</div>
-        </div>
-        <div class="new-question">
-          <div class="new-question-subject-name">과목명</div>
-          <div class="new-question-professor-name">교수명</div>
-          <div class="new-question-subject-code">과목코드</div>
-        </div>
-        <div class="new-question">
-          <div class="new-question-subject-name">과목명</div>
-          <div class="new-question-professor-name">교수명</div>
-          <div class="new-question-subject-code">과목코드</div>
+        <div class="new-question" v-for="question in 3" :key="question">
+          <div class="new-question-subject-name">
+            {{ newQ_lecture[0].lecture_name }}
+          </div>
+          <div class="new-question-professor-name">
+            {{ newQ_lecture[0].professor }}
+          </div>
+          <div class="new-question-subject-code">
+            {{ newQ_lecture[0].code }}
+          </div>
         </div>
       </div>
     </div>
@@ -113,35 +63,56 @@
       <div class="main-detail">당신의 답변을 기다리고 있어요!</div>
 
       <div class="question-list">
-      <div class="question-item">
-        질문
-        <span class="subject">수업 이름</span>
+        <div class="question-item" v-for="question in 4" :key="question">
+          {{ my_nonansQ[0].title }}
+          <span class="subject">{{ my_nonansQ[0].lecture_name }}</span>
+        </div>
       </div>
-      <div class="question-item">
-        질문
-        <span class="subject">수업 이름</span>
-      </div>
-      <div class="question-item">
-        질문제목
-        <span class="subject">수업 이름</span>
-      </div>
-      <div class="question-item">
-        lorem ipsum
-        <span class="subject">수업 이름</span>
-      </div>
-      <div class="question-item">
-        질문
-        <span class="subject">수업 이름</span>
-      </div>
+      <button class="load-more">+ 더보기</button>
     </div>
-    <button class="load-more">+ 더보기</button>
-    </div>
-
   </div>
 </template>
 
 <script>
-
+export default {
+  data() {
+    return {
+      nonansQ: [
+        {
+          question_id: 1,
+          lecture_name: "과목명1",
+          title: "제목",
+          code: "코드",
+          professor: "교수 이름1",
+        },
+      ],
+      newQ_lecture: [
+        {
+          question_id: 1,
+          lecture_name: "과목명1",
+          title: "제목",
+          code: "코드",
+          professor: "교수 이름1",
+        },
+      ],
+      my_nonansQ: [
+        {
+          question_id: 1,
+          lecture_name: "과목명1",
+          title: "제목",
+          code: "코드",
+          professor: "교수 이름1",
+        },
+      ],
+    };
+  },
+  methods: {
+    enterSubject(subjectId) {
+      alert(`입장한 과목 ID: ${subjectId}`);
+      // 원하는 로직 추가 (라우팅 등)
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -166,21 +137,20 @@
   font-size: 0.9rem;
   margin-bottom: 2rem;
 }
-.nonans-question-row {
+.nonans-questions {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  height: 8rem;
-  margin-bottom: 1rem;
-}
-.nonans-question {
-  border: 1px solid rgb(232, 232, 232);
-  display: flex;
+  grid-template-columns: repeat(3, 1fr);
   align-items: center;
   padding: 0 0.5rem;
   font-size: 0.9rem;
+  gap: 20px;
 }
-.nonans-question:not(:last-child) {
-  margin-right: 1.5rem;
+.nonans-question-card {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
 }
 .nonans-question-subject-name {
   height: 6rem;
@@ -213,7 +183,7 @@
   background-color: white;
   border: 1px solid rgb(99, 99, 99);
   border-radius: 0.3rem;
-  margin-top: 1rem
+  margin-top: 1rem;
 }
 .home-content {
   border-bottom: 1px solid rgb(230, 230, 230);
