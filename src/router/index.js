@@ -34,9 +34,34 @@ const router = createRouter({
       component: () => import('../page/SettingPage.vue'),
     },
     {
+      path: '/classlist',
+      name: 'classlist',
+      component: () => import('../page/ClassListPage.vue')
+    },
+    {
       path: '/class',
       name: 'class',
-      component: () => import('../page/ClassListPage.vue')
+      component: () => import('../page/ClassPage.vue')
+    },
+    {
+      path: '/post',
+      name: 'post',
+      component: () => import('../page/PostPage.vue')
+    },
+    {
+      path: '/searchhistory',
+      name: 'searchhistory',
+      component: () => import('../page/SearchPage.vue')
+    },
+    {
+      path: '/myquestion',
+      name: 'myquestion',
+      component: () => import('../page/MyQuestionPage.vue')
+    },
+    {
+      path: '/lectureList',
+      name: 'lectureList',
+      component: () => import('../page/LectureList.vue')
     }
   ],
 });
