@@ -7,7 +7,7 @@
         <router-link to="/" class="link">
         <div class="header-menu-item">홈</div>
         </router-link>
-        <router-link to="/signup" class="link">
+        <router-link to="/classlist" class="link">
           <div class="header-menu-item">개설과목</div>
         </router-link>
         <router-link to="/signup" class="link">
@@ -37,8 +37,8 @@ export default {
 
 <style scoped>
 header {
+  background-color: white;
   display: flex;
-  position: inherit;
   align-items: center;
   height: 3.5rem;
   padding: 0 2rem;

@@ -1,41 +1,7 @@
 <template>
   <div class="classlist">
     <div>
-      <div class="classlist-title">24년 2학기 개설목록</div>
-    </div>
-    <div class="class-row">
-      <div class="class">
-        <div class="class-icon"></div>
-        <div class="class-subject-name">과목명</div>
-        <div class="class-professor-name">교수이름</div>
-        <div class="class-in-btn-cover">
-          <button class="class-in-btn">입장하기</button>
-        </div>
-      </div>
-      <div class="class">
-        <div class="class-icon"></div>
-        <div class="class-subject-name">과목명</div>
-        <div class="class-professor-name">교수이름</div>
-        <div class="class-in-btn-cover">
-          <button class="class-in-btn">입장하기</button>
-        </div>
-      </div>
-      <div class="class">
-        <div class="class-icon"></div>
-        <div class="class-subject-name">과목명</div>
-        <div class="class-professor-name">교수이름</div>
-        <div class="class-in-btn-cover">
-          <button class="class-in-btn">입장하기</button>
-        </div>
-      </div>
-      <div class="class">
-        <div class="class-icon"></div>
-        <div class="class-subject-name">과목명</div>
-        <div class="class-professor-name">교수이름</div>
-        <div class="class-in-btn-cover">
-          <button class="class-in-btn">입장하기</button>
-        </div>
-      </div>
+      <div class="classlist-title">24년 2학기 수강과목</div>
     </div>
     <div class="class-row">
       <div class="class">

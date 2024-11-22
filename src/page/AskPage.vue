@@ -81,8 +81,8 @@ export default {
   height: 15rem;
 }
 .ask-page-input-body:empty::before, .ask-page-input-body:empty::before {
-    content: attr(placeholder);
-    color: rgb(161, 161, 161);
+  content: attr(placeholder);
+  color: rgb(161, 161, 161);
 }
 .post-btn {
   background-color: black;
