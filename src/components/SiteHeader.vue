@@ -38,7 +38,6 @@ export default {
 <style scoped>
 header {
   display: flex;
-  position: inherit;
   align-items: center;
   height: 3.5rem;
   padding: 0 2rem;
