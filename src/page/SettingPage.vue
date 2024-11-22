@@ -3,8 +3,8 @@
     <div class="user-info-body">
       <div class="user-icon"></div>
       <div class="user-info">
-        <div class="user-name">별명</div>
-        <div class="user-email">ooogmail.com</div>
+        <div class="user-name">{{ name }}</div>
+        <div class="user-email">{{ email }}</div>
       </div>
     </div>
   </div>
@@ -21,7 +21,7 @@
         </div>
         <div class="input-box">
           <label>이메일</label>
-          <input type="text" placeholder="비밀번호를 입력해 주세요" />
+          <input type="text" placeholder="이메일을 입력해 주세요" />
         </div>
         <div class="login-btn-cover">
           <button class="cancel-btn">취소</button>
@@ -34,8 +34,13 @@
 
 <script>
 export default {
-  
-}
+  data() {
+    return {
+      name: "이름",
+      email: "email",
+    };
+  },
+};
 </script>
 
 <style scoped>
@@ -77,6 +82,7 @@ export default {
   margin-top: 4.5rem;
   display: grid;
   grid-template-columns: 1fr 1fr;
+  min-height: 55vh;
 }
 .setting-banner {
   align-content: center;
