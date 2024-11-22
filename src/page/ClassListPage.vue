@@ -4,102 +4,10 @@
       <div class="classlist-title">24년 2학기 개설목록</div>
     </div>
     <div class="class-row">
-      <div class="class">
+      <div class="class" v-for="(subject, index) in subjects" :key="index">
         <div class="class-icon"></div>
-        <div class="class-subject-name">과목명</div>
-        <div class="class-professor-name">교수이름</div>
-        <div class="class-in-btn-cover">
-          <button class="class-in-btn">입장하기</button>
-        </div>
-      </div>
-      <div class="class">
-        <div class="class-icon"></div>
-        <div class="class-subject-name">과목명</div>
-        <div class="class-professor-name">교수이름</div>
-        <div class="class-in-btn-cover">
-          <button class="class-in-btn">입장하기</button>
-        </div>
-      </div>
-      <div class="class">
-        <div class="class-icon"></div>
-        <div class="class-subject-name">과목명</div>
-        <div class="class-professor-name">교수이름</div>
-        <div class="class-in-btn-cover">
-          <button class="class-in-btn">입장하기</button>
-        </div>
-      </div>
-      <div class="class">
-        <div class="class-icon"></div>
-        <div class="class-subject-name">과목명</div>
-        <div class="class-professor-name">교수이름</div>
-        <div class="class-in-btn-cover">
-          <button class="class-in-btn">입장하기</button>
-        </div>
-      </div>
-    </div>
-    <div class="class-row">
-      <div class="class">
-        <div class="class-icon"></div>
-        <div class="class-subject-name">과목명</div>
-        <div class="class-professor-name">교수이름</div>
-        <div class="class-in-btn-cover">
-          <button class="class-in-btn">입장하기</button>
-        </div>
-      </div>
-      <div class="class">
-        <div class="class-icon"></div>
-        <div class="class-subject-name">과목명</div>
-        <div class="class-professor-name">교수이름</div>
-        <div class="class-in-btn-cover">
-          <button class="class-in-btn">입장하기</button>
-        </div>
-      </div>
-      <div class="class">
-        <div class="class-icon"></div>
-        <div class="class-subject-name">과목명</div>
-        <div class="class-professor-name">교수이름</div>
-        <div class="class-in-btn-cover">
-          <button class="class-in-btn">입장하기</button>
-        </div>
-      </div>
-      <div class="class">
-        <div class="class-icon"></div>
-        <div class="class-subject-name">과목명</div>
-        <div class="class-professor-name">교수이름</div>
-        <div class="class-in-btn-cover">
-          <button class="class-in-btn">입장하기</button>
-        </div>
-      </div>
-    </div>
-    <div class="class-row">
-      <div class="class">
-        <div class="class-icon"></div>
-        <div class="class-subject-name">과목명</div>
-        <div class="class-professor-name">교수이름</div>
-        <div class="class-in-btn-cover">
-          <button class="class-in-btn">입장하기</button>
-        </div>
-      </div>
-      <div class="class">
-        <div class="class-icon"></div>
-        <div class="class-subject-name">과목명</div>
-        <div class="class-professor-name">교수이름</div>
-        <div class="class-in-btn-cover">
-          <button class="class-in-btn">입장하기</button>
-        </div>
-      </div>
-      <div class="class">
-        <div class="class-icon"></div>
-        <div class="class-subject-name">과목명</div>
-        <div class="class-professor-name">교수이름</div>
-        <div class="class-in-btn-cover">
-          <button class="class-in-btn">입장하기</button>
-        </div>
-      </div>
-      <div class="class">
-        <div class="class-icon"></div>
-        <div class="class-subject-name">과목명</div>
-        <div class="class-professor-name">교수이름</div>
+        <div class="class-subject-name">{{ subject.name }}</div>
+        <div class="class-professor-name">{{ subject.professor }}</div>
         <div class="class-in-btn-cover">
           <button class="class-in-btn">입장하기</button>
         </div>
@@ -110,8 +18,18 @@
 
 <script>
 export default {
-  
-}
+  data() {
+    return {
+      subjects: [
+        { id: 1, name: "과목명1", professor: "교수 이름1" },
+        { id: 2, name: "과목명2", professor: "교수 이름2" },
+        { id: 3, name: "과목명3", professor: "교수 이름3" },
+        { id: 4, name: "과목명4", professor: "교수 이름4" },
+      ],
+    };
+  },
+  methods: {},
+};
 </script>
 
 <style scoped>
@@ -138,9 +56,11 @@ export default {
   border-radius: 2rem;
 }
 .classlist {
-  margin: 0 10rem;
+  min-height: 100vh;
+  margin: 0 5rem;
 }
-.class-subject-name, .class-professor-name {
+.class-subject-name,
+.class-professor-name {
   text-align: center;
 }
 .class-professor-name {
