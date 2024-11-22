@@ -12,16 +12,11 @@
     <router-link to="/myquestion" class="link">
       <div class="left-bar-menu">나의 질문</div>
     </router-link>
-    <router-link to="/searchhistory" class="link">
-      <div class="left-bar-menu">검색기록</div>
-    </router-link>
   </div>
 </template>
 
 <script>
-export default {
-  
-}
+export default {};
 </script>
 
 <style scoped>
