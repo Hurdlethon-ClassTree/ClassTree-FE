@@ -1,4 +1,4 @@
-import * as authApi from '@/api/auth';
+import * as authApi from '@/api/user/auth';
 
 export default {
   namespaced: true,
