@@ -4,7 +4,7 @@
       <div class="classlist-title">24년 2학기 개설목록</div>
     </div>
     <div v-if="loading">로딩중</div>
-    <div class="class-row">
+    <div class="class-row" v-else>
       <div class="class" v-for="(subject, index) in subjects" :key="index">
         <div class="class-icon"></div>
         <div class="class-subject-name">{{ subject.lecture_name }}</div>
@@ -26,14 +26,15 @@ export default {
       loading: true,
       error: null,
       subjects: [
-        { id: 1, name: "과목명1", professor: "교수 이름1" },
-        { id: 2, name: "과목명2", professor: "교수 이름2" },
-        { id: 3, name: "과목명3", professor: "교수 이름3" },
-        { id: 4, name: "과목명4", professor: "교수 이름4" },
-        { id: 1, name: "과목명1", professor: "교수 이름1" },
-        { id: 2, name: "과목명2", professor: "교수 이름2" },
-        { id: 3, name: "과목명3", professor: "교수 이름3" },
-        { id: 4, name: "과목명4", professor: "교수 이름4" },
+        {
+          lecture_id: 2,
+          lecture_name: "네트워크",
+          lecture_code: "CSE-1232",
+          lecture_day: "0101000",
+          lecture_time: "14:00:00 ~ 15:00:00",
+          semester: "1",
+          year: "2024",
+        },
       ],
     };
   },
