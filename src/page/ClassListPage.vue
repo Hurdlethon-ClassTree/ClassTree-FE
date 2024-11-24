@@ -3,11 +3,12 @@
     <div>
       <div class="classlist-title">24년 2학기 개설목록</div>
     </div>
+    <div v-if="loading">로딩중</div>
     <div class="class-row">
       <div class="class" v-for="(subject, index) in subjects" :key="index">
         <div class="class-icon"></div>
-        <div class="class-subject-name">{{ subject.name }}</div>
-        <div class="class-professor-name">{{ subject.professor }}</div>
+        <div class="class-subject-name">{{ subject.lecture_name }}</div>
+        <div class="class-professor-name">{{ subject.lecture_code }}</div>
         <div class="class-in-btn-cover">
           <button class="class-in-btn">입장하기</button>
         </div>
@@ -17,9 +18,13 @@
 </template>
 
 <script>
+import * as lectureListApi from "@/api/board/lectureList";
+
 export default {
   data() {
     return {
+      loading: true,
+      error: null,
       subjects: [
         { id: 1, name: "과목명1", professor: "교수 이름1" },
         { id: 2, name: "과목명2", professor: "교수 이름2" },
@@ -32,7 +37,21 @@ export default {
       ],
     };
   },
-  methods: {},
+  mounted() {
+    this.fetchData();
+  },
+  methods: {
+    async fetchData() {
+      try {
+        const response = await lectureListApi.lectureList();
+        this.subjects = response.data.lecture_list;
+      } catch (err) {
+        console.error(err);
+      } finally {
+        this.loading = false;
+      }
+    },
+  },
 };
 </script>
 
@@ -46,10 +65,10 @@ export default {
 }
 .class-row {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   margin-bottom: 2rem;
   padding-bottom: 2rem;
-  gap: 20px;
+  gap: 5rem;
 }
 .class-row:not(:last-child) {
   border-bottom: 1px solid rgb(27, 145, 27);
@@ -57,6 +76,7 @@ export default {
 .class {
   margin: 0 2.5rem;
   padding: 2rem 0 3.5rem;
+  width: 15vw;
   background-color: rgb(242, 242, 242);
   border-radius: 2rem;
 }
