@@ -3,14 +3,10 @@ import * as authApi from '@/api/user/auth';
 export default {
   namespaced: true,
   state: {
-    token: null,
     nickname: null,
     email: null
   },
   mutations: {
-    setToken(state, token) {
-      state.token = token;
-    },
     setNickname(state, nickname){
       state.nickname = nickname;
     },
@@ -24,7 +20,6 @@ export default {
         const response = await authApi.login(userId, password);
 
         if (response.status === 200) {
-          context.commit('setToken', response.data.token);
           context.commit('setNickname', response.data.nickname);
           context.commit('setEmail', response.data.email);
         }
@@ -35,7 +30,6 @@ export default {
     loginWithoutAsync(context, { userId, password }) {
       authApi.login(userId, password).then(response => {
         if (response.status === 200) {
-          context.commit('setToken', response.data.token);
           context.commit('setNickname', response.data.nickname);
           context.commit('setEmail', response.data.email);
         }
@@ -44,7 +38,6 @@ export default {
       });
     },
     logout(context){
-      context.commit('setToken', null);
       context.commit('setNickname', null);
       context.commit('setEmail', null);
     }
