@@ -35,34 +35,52 @@
             v-model="email"
           />
         </div>
-        <div class="button-group">
-          <button type="button" class="cancel-btn" @click="cancelEdit">
-            취소
-          </button>
-          <button type="submit" class="modify-btn" @click="saveEdit">
-            수정하기
-          </button>
-        </div>
+        <button type="submit" class="modify-btn" @click="saveEdit">
+          수정하기
+        </button>
       </form>
     </div>
   </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
+import * as editApi from "@/api/user/editUserInfo";
+
 export default {
+  computed: {
+    ...mapState("auth", ["nickname", "email", "loggedIn"]),
+  },
   data() {
     return {
-      name: "사용자 이름",
-      email: "user@example.com",
+      tmpNickname: this.nickname,
+      tmpEmail: this.email,
     };
   },
+  mounted() {
+    if (!this.loggedIn) {
+      window.location.assign("/");
+    }
+  },
   methods: {
-    cancelEdit() {
-      alert("수정을 취소합니다.");
-    },
-    saveEdit(event) {
-      event.preventDefault();
-      alert(`수정 완료: ${this.name}, ${this.email}`);
+    async saveEdit(event) {
+      try {
+        // API 호출
+        const response = await editApi.editUserInfo(
+          this.tmpNickname,
+          this.tmpEmail
+        );
+        if (response && response.status === 200) {
+          // this.$store.commit("auth/setLoggedIn", true);
+          // this.$store.commit("auth/setNickname", response.data.user.NICKNAME);
+          // this.$store.commit("auth/setEmail", response.data.user.email);
+        } else {
+          alert(response.message);
+        }
+      } catch (err) {
+        console.error(err);
+        alert("서버 오류가 발생했습니다. 다시 시도해 주세요.");
+      }
     },
   },
 };

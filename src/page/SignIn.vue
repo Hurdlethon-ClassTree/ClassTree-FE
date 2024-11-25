@@ -33,6 +33,7 @@
 
 <script>
 import * as loginApi from "@/api/user/auth";
+import { mapActions, mapMutations } from "vuex";
 
 export default {
   data() {
@@ -52,10 +53,10 @@ export default {
       try {
         // API 호출
         const response = await loginApi.login(this.username, this.password);
-        console.log(response);
+        console.log(response.data.user.NICKNAME);
         if (response && response.status === 200) {
           this.$store.commit("auth/setLoggedIn", true);
-          this.$store.commit("auth/setNickname", response.data.user.username);
+          this.$store.commit("auth/setNickname", response.data.user.NICKNAME);
           this.$store.commit("auth/setEmail", response.data.user.email);
           this.$router.push("/");
         } else {
