@@ -6,22 +6,16 @@
     <!-- 질문 목록 -->
     <div class="nonans-questions">
       <div
-        class="nonans-question-row"
-        v-for="(row, index) in questions"
-        :key="index"
+        class="nonans-question"
+        v-for="question in questionList"
+        :key="question"
       >
-        <div
-          class="nonans-question"
-          v-for="(question, qIndex) in row"
-          :key="qIndex"
-        >
-          <div class="nonans-question-subject-name">{{ question.subject }}</div>
-          <div class="nonans-question-body">
-            <div class="nonans-question-title">{{ question.title }}</div>
-            <div class="nonans-question-tags">
-              <div class="nonans-question-tag">{{ question.date }}</div>
-              <div class="nonans-question-tag">{{ question.professor }}</div>
-            </div>
+        <div class="nonans-question-subject-name">{{ question.lecture_id }}</div>
+        <div class="nonans-question-body">
+          <div class="nonans-question-title">{{ question.title }}</div>
+          <div class="nonans-question-tags">
+            <div class="nonans-question-tag">{{ question.created_at.substring(0, 10) }}</div>
+            <!--<div class="nonans-question-tag">{{ question.professor }}</div>-->
           </div>
         </div>
       </div>
@@ -30,41 +24,30 @@
 </template>
 
 <script>
+import * as myquestionApi from "@/api/user/myQuestion";
+
 export default {
   data() {
     return {
-      questions: [
-        [
-          {
-            subject: "수학",
-            title: "미적분 질문",
-            date: "2024-11-25",
-            professor: "홍길동",
-          },
-          {
-            subject: "물리",
-            title: "운동법칙",
-            date: "2024-11-24",
-            professor: "이몽룡",
-          },
-        ],
-        [
-          {
-            subject: "화학",
-            title: "화학식 문제",
-            date: "2024-11-23",
-            professor: "성춘향",
-          },
-          {
-            subject: "생물",
-            title: "세포 구조",
-            date: "2024-11-22",
-            professor: "박지원",
-          },
-        ],
-      ],
+      loading: true,
+      questionList: [],
     };
   },
+  mounted() {
+    this.fetchData();
+  },
+  methods: {
+    async fetchData() {
+      try {
+        const response = await myquestionApi.myQuestion();
+        this.questionList = response.data;
+      } catch (err) {
+        alert("질문을 불러오는 도중 문제가 발생하였습니다");
+      } finally {
+        this.loading = false;
+      }
+    }
+  }
 };
 </script>
 
@@ -86,13 +69,15 @@ export default {
 
 /* 질문 목록 */
 .nonans-questions {
+  display: flex;
+  flex-wrap: wrap;
   margin: 0 auto;
   max-width: 1200px;
 }
 
-.nonans-question-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+.nonans-question {
+  width: 45%;
+  margin-right: 2%;
   gap: 2rem;
   margin-bottom: 2rem;
 }
