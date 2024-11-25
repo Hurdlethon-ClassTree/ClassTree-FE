@@ -1,11 +1,14 @@
 import http from '@/api/http';
 
 
-export function signup(id, password, email, school_email) {
+export function signup(username, password, email, school_email, nickname, student_number, major) {
   return http.post('/signup', {
-    id,
+    username,
     password,
     email,
-    school_email
+    school_email,
+    nickname,
+    student_number,
+    major
   });
 }
