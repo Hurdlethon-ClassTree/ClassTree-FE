@@ -17,7 +17,7 @@
           </div>
         </div>
         <div class="question-header-left">
-          <button class="curious-btn" @click="increaseCurious">나도 궁금해요! {{ this.question.curious }}</button>
+          <button class="curious-btn" @click="increaseCurious">나도 궁금해요! {{ this.curious }}</button>
           <div class="points">{{ this.question.curious }}</div>
         </div>
       </div>
@@ -56,21 +56,22 @@
 
 <script>
 import * as questionApi from "@/api/board/questionDetail";
-import * as answerApi from "@/api/answer/postAnswer";
+import * as answerPost from "@/api/answer/postAnswer";
+import * as questionPut from "@/api/question/putQuestion";
 
 export default {
   data() {
     return {
       loading: true,
-      error: null,
       question: {},
       content: "",
+      curious: 0,
     }
   },
   props: {
-    lectured_id: {
+    question_id: {
       type: String,
-      default: null,
+      default: "0",
     }
   },
   mounted() {
@@ -79,19 +80,20 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const response = await questionApi.questionDetail(this.lectured_id);
+        const response = await questionApi.questionDetail(this.question_id);
         this.question = response.data;
       } catch(err) {
         alert("질문을 불러오는 도중 문제가 발생하였습니다.");
       } finally {
         this.loading = false;
+        this.curious = this.question.curious;
       }
     }
   },
   async postAnswer() {
     const answer = this.$refs.answer.innerText;
     try {
-      const response = await answerApi.postAnswer(this.lectured_id, answer);
+      const response = await answerPost.postAnswer(this.question_id, answer);
       if (!response) {
         alert("답글 게시 중 문제가 발생하였습니다.");
       }
@@ -102,7 +104,11 @@ export default {
     }
   },
   async increaseCurious() {
-    
+    try {
+      questionPut.putQuestion(this.question_id, this.question.title, this.question.content, this.curious + 1);
+    } finally {
+      this.curious = this.question.curious + 1;
+    }
   }
 }
 </script>
