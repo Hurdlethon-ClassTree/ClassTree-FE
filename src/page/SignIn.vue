@@ -45,8 +45,7 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  background-color: #f9f9f9;
+  background-color: white;
   padding: 2rem;
 }
 
