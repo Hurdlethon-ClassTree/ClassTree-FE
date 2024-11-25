@@ -1,87 +1,109 @@
 <template>
   <div class="post">
-    <div class="question-header">
-      <div class="question-header-right">
-        <div class="ask-icon">
-          ?
-        </div>
-        <div>
-          <div class="question-title">
-            질문 제목
+    <div v-if="loading">로딩중</div>
+    <div v-else>
+      <div class="question-header">
+        <div class="question-header-right">
+          <div class="ask-icon">
+            ?
           </div>
-          <div class="question-detail">
-            과목명-교수이름
-          </div>
-        </div>
-      </div>
-      <div class="question-header-left">
-        <button class="curious-btn">나도 궁금해요! 24</button>
-        <div class="points">100</div>
-      </div>
-    </div>
-    <div class="question-body">
-      
-    </div>
-    <div class="reply-cover">
-      <div class="reply">
-        <div class="reply-header">
-          <div class="reply-user-info">
-            <div class="reply-user-icon"></div>
-            <div>별명1</div>
-          </div>
-          <div class="reply-options">
-            ···
+          <div>
+            <div class="question-title">
+              {{ this.question.title }}
+            </div>
+            <div class="question-detail">
+              {{ this.question.lecture_name }}
+            </div>
           </div>
         </div>
+        <div class="question-header-left">
+          <button class="curious-btn" @click="increaseCurious">나도 궁금해요! {{ this.question.curious }}</button>
+          <div class="points">{{ this.question.curious }}</div>
+        </div>
       </div>
-      <div class="reply">
-        <div class="reply-header">
-          <div class="reply-user-info">
-            <div class="reply-user-icon"></div>
-            <div>별명1</div>
+      <div class="question-body">
+        {{ this.question.content }}
+      </div>
+    
+      <div class="reply-cover">
+        <div v-for="answer in question.answers" :key="answer.id" class="reply">
+          <div class="reply-header">
+            <div class="reply-user-info">
+              <div class="reply-user-icon"></div>
+              <div>{{ answer.user_id }}</div>
+            </div>
+            <div class="reply-options">
+              ···
+            </div>
           </div>
-          <div class="reply-options">
-            ···
+          <div class="reply-body">
+            {{ answer.content }}
           </div>
         </div>
       </div>
-      <div class="reply">
-        <div class="reply-header">
-          <div class="reply-user-info">
-            <div class="reply-user-icon"></div>
-            <div>별명1</div>
-          </div>
-          <div class="reply-options">
-            ···
-          </div>
-        </div>
-      </div>
-      <div class="reply">
-        <div class="reply-header">
-          <div class="reply-user-info">
-            <div class="reply-user-icon"></div>
-            <div>별명1</div>
-          </div>
-          <div class="reply-options">
-            ···
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="reply-input-area">
-      <div class="reply-input" contenteditable="true" placeholder="내용을 입력하세요">
 
-      </div>
-      <div class="reply-input-btn-cover">
-        <button class="reply-input-btn">답글 달기</button>
+      <div class="reply-input-area">
+        <div class="reply-input" contenteditable="true" ref="answer" placeholder="내용을 입력하세요" spellcheck="false">
+
+        </div>
+        <div class="reply-input-btn-cover">
+          <button class="reply-input-btn" @click="postAnswer">답글 달기</button>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import * as questionApi from "@/api/board/questionDetail";
+import * as answerApi from "@/api/answer/postAnswer";
+
 export default {
-  
+  data() {
+    return {
+      loading: true,
+      error: null,
+      question: {},
+      content: "",
+    }
+  },
+  props: {
+    lectured_id: {
+      type: String,
+      default: null,
+    }
+  },
+  mounted() {
+    this.fetchData();
+  },
+  methods: {
+    async fetchData() {
+      try {
+        const response = await questionApi.questionDetail(this.lectured_id);
+        this.question = response.data;
+      } catch(err) {
+        alert("질문을 불러오는 도중 문제가 발생하였습니다.");
+      } finally {
+        this.loading = false;
+      }
+    }
+  },
+  async postAnswer() {
+    const answer = this.$refs.answer.innerText;
+    try {
+      const response = await answerApi.postAnswer(this.lectured_id, answer);
+      if (!response) {
+        alert("답글 게시 중 문제가 발생하였습니다.");
+      }
+    } catch(err) {
+      alert("답글 게시 중 문제가 발생하였습니다.");
+    } finally {
+      this.$refs.answer.innerText = "";
+    }
+  },
+  async increaseCurious() {
+    
+  }
 }
 </script>
 
@@ -121,20 +143,24 @@ export default {
 .question-body {
   border: 1px solid rgba(34, 124, 49, 0.37);
   border-radius: 1rem;
-  height: 10rem;
+  min-height: 10rem;
   margin-bottom: 2rem;
+  padding: 0.5rem 0.7rem;
 }
 
 .reply {
   background-color: rgba(206, 233, 207, 0.26);
   padding: 0.7rem 1rem;
   border-radius: 0.5rem;
-  height: 5rem;
+  min-height: 5rem;
   margin-bottom: 2rem;
 }
 .reply-options {
   position: absolute;
   right: 1rem;
+}
+.reply-body {
+  margin-top: 0.2rem;
 }
 
 .reply-input-area {
