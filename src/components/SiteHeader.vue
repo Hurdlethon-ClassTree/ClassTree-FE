@@ -13,9 +13,12 @@
         <router-link to="/signup" class="link">
           <div class="header-menu-item">가입하기</div>
         </router-link>
-        <router-link to="/signin" class="link">
+
+        <router-link v-if="!loggedIn" to="/signin" class="link">
           <div class="header-menu-item">로그인</div>
         </router-link>
+        <div v-else @click="logout" class="header-menu-item">로그아웃</div>
+
         <router-link to="/setting" class="link">
           <div class="header-menu-item">설정</div>
         </router-link>
@@ -29,10 +32,17 @@
     </div>
   </header>
 </template>
-
 <script>
+import { mapActions, mapState } from "vuex";
+
 export default {
+  computed: {
+    ...mapState("auth", ["loggedIn"]),
+  },
   data() {},
+  methods: {
+    ...mapActions("auth", ["logout"]),
+  },
 };
 </script>
 
