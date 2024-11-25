@@ -5,7 +5,7 @@
     <div class="left-options">
       <div class="header-menu">
         <router-link to="/" class="link">
-        <div class="header-menu-item">홈</div>
+          <div class="header-menu-item">홈</div>
         </router-link>
         <router-link to="/classlist" class="link">
           <div class="header-menu-item">개설과목</div>
@@ -21,7 +21,10 @@
         </router-link>
       </div>
       <div class="search-box">
-        <input class="search-box-input" placeholder="다른 사람의 질문과 강의실을 검색해 보세요!" />
+        <input
+          class="search-box-input"
+          placeholder="다른 사람의 질문과 강의실을 검색해 보세요!"
+        />
       </div>
     </div>
   </header>
@@ -29,9 +32,7 @@
 
 <script>
 export default {
-  data() {
-
-  }
+  data() {},
 };
 </script>
 
@@ -40,52 +41,70 @@ header {
   background-color: white;
   display: flex;
   align-items: center;
-  height: 3.5rem;
+  height: 4rem;
   padding: 0 2rem;
   border-bottom: 1px solid rgb(224, 224, 224);
 }
+
 .logo {
-  height: 1.8rem;
-  width: 1.8rem;
-  border-radius: 1rem;
+  height: 2rem;
+  width: 2rem;
+  border-radius: 50%;
   background-color: rgb(230, 230, 230);
-  margin-right: 0.8rem;
+  margin-right: 1rem;
 }
-.left-options {
-  position: absolute;
-  right: 2rem;
-  display: flex;
-}
+
 .header-title {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: bold;
+  flex-grow: 1;
 }
+
+.left-options {
+  display: flex;
+  align-items: center;
+}
+
 .header-menu {
   display: flex;
   align-items: center;
   margin-right: 2rem;
 }
+
 .header-menu-item {
   margin-left: 1rem;
-  font-size: 0.9rem;
+  font-size: 1rem;
+  transition: color 0.3s ease;
 }
+
+.header-menu-item:hover {
+  color: #007bff;
+}
+
 .search-box {
-  height: 2rem;
-  width: 17rem;
+  height: 2.5rem;
+  width: 18rem;
   border: 1px solid rgb(230, 230, 230);
-  border-radius: 0.2rem;
+  border-radius: 0.25rem;
   padding-left: 0.5rem;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box; /* 패딩을 포함시켜 전체 크기 계산 */
 }
+
 .search-box-input {
   border: none;
-  width: 15rem;
-  height: 2rem;
-  line-height: 2rem;
-  padding: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  box-sizing: border-box; /* 패딩을 포함시켜 크기 계산 */
 }
+
 .search-box-input::placeholder {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
 }
+
 .search-box-input:focus {
   outline: none;
 }
