@@ -1,141 +1,222 @@
 <template>
-  <div class="user-info-area">
-    <div class="user-info-body">
-      <div class="user-icon"></div>
-      <div class="user-info">
-        <div class="user-name">{{ name }}</div>
-        <div class="user-email">{{ email }}</div>
+  <div>
+    <!-- 사용자 정보 영역 -->
+    <div class="user-info-area">
+      <div class="user-info-body">
+        <div class="user-icon"></div>
+        <div class="user-info">
+          <div class="user-name">{{ name }}</div>
+          <div class="user-email">{{ email }}</div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="setting">
-    <div class="setting-banner">
-      <h1>프로필 수정하기</h1>
-    </div>
-    <div class="setting-form-container">
-      <div class="setting-form">
-        <div class="input-box">
-          <label>별명</label>
-          <input type="text" placeholder="아이디를 입력해 주세요" />
-        </div>
-        <div class="input-box">
-          <label>이메일</label>
-          <input type="text" placeholder="이메일을 입력해 주세요" />
-        </div>
-        <div class="login-btn-cover">
-          <button class="cancel-btn">취소</button>
-          <button class="modify-btn">수정하기</button>
-        </div>
+    <!-- 프로필 수정 -->
+    <div class="setting">
+      <div class="setting-banner">
+        <h1>프로필 수정하기</h1>
       </div>
+      <form class="setting-form">
+        <div class="input-group">
+          <label for="nickname">별명</label>
+          <input
+            id="nickname"
+            type="text"
+            placeholder="별명을 입력해 주세요"
+            v-model="name"
+          />
+        </div>
+        <div class="input-group">
+          <label for="email">이메일</label>
+          <input
+            id="email"
+            type="email"
+            placeholder="이메일을 입력해 주세요"
+            v-model="email"
+          />
+        </div>
+        <button type="submit" class="modify-btn" @click="saveEdit">
+          수정하기
+        </button>
+      </form>
     </div>
   </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
+import * as editApi from "@/api/user/editUserInfo";
+
 export default {
+  computed: {
+    ...mapState("auth", ["nickname", "email", "loggedIn"]),
+  },
   data() {
     return {
-      name: "이름",
-      email: "email",
+      tmpNickname: this.nickname,
+      tmpEmail: this.email,
     };
+  },
+  mounted() {
+    if (!this.loggedIn) {
+      window.location.assign("/");
+    }
+  },
+  methods: {
+    async saveEdit(event) {
+      try {
+        // API 호출
+        const response = await editApi.editUserInfo(
+          this.tmpNickname,
+          this.tmpEmail
+        );
+        if (response && response.status === 200) {
+          // this.$store.commit("auth/setLoggedIn", true);
+          // this.$store.commit("auth/setNickname", response.data.user.NICKNAME);
+          // this.$store.commit("auth/setEmail", response.data.user.email);
+        } else {
+          alert(response.message);
+        }
+      } catch (err) {
+        console.error(err);
+        alert("서버 오류가 발생했습니다. 다시 시도해 주세요.");
+      }
+    },
   },
 };
 </script>
 
 <style scoped>
+/* 사용자 정보 */
 .user-info-area {
-  height: 13rem;
+  display: flex;
   align-items: center;
-  padding: 0 10rem;
-  display: flex;
-  background-color: rgb(103, 103, 103);
-}
-.user-icon {
-  width: 6rem;
-  height: 6rem;
-  background-color: rgba(217, 217, 217, 0.5);
-  border-radius: 4rem;
-  margin-right: 1.5rem;
-}
-.user-info-body {
-  display: flex;
-  align-content: center;
-}
-.user-name {
-  margin-top: 1.2rem;
-  color: white;
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin-bottom: 0.8rem;
-}
-.user-email {
-  color: white;
-  font-size: 0.9rem;
-  color: black;
-  background-color: rgb(194, 194, 194);
-  padding: 0 0.4rem;
-  border-radius: 0.1rem;
+  padding: 1.5rem 2rem;
+  background-color: #66bb6a;
+  margin-bottom: 2rem;
 }
 
+.user-info-body {
+  display: flex;
+  align-items: center;
+}
+
+.user-icon {
+  width: 80px;
+  height: 80px;
+  background-color: #ddd;
+  border-radius: 50%;
+  margin-right: 1rem;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: white;
+}
+
+.user-email {
+  font-size: 0.9rem;
+  color: white;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  margin-top: 0.5rem;
+}
+
+/* 프로필 수정 */
 .setting {
-  margin-top: 4.5rem;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  min-height: 55vh;
+  padding: 0 2rem;
 }
+
 .setting-banner {
-  align-content: center;
-  padding-left: 5rem;
+  margin-bottom: 2rem;
+  text-align: center;
 }
+
+.setting-banner h1 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.setting-form {
+  max-width: 500px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+}
+
 label {
   margin-bottom: 0.5rem;
   font-weight: bold;
-  font-size: 0.9rem;
+  color: #333;
 }
-.setting-form {
-  width: 25rem;
-}
-.setting-form-container {
-  margin-left: 3rem;
-  align-content: center;
-}
-.input-box {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 3rem;
-}
-.input-box > input:focus {
-  outline: none;
-}
+
 input {
-  height: 2rem;
-  border: 1px solid rgb(230, 230, 230);
-  margin: 0;
-  padding: 0 0.5rem;
-  border-radius: 0.3rem;
+  height: 2.5rem;
+  padding: 0 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  width: 100%;
 }
+
+input:focus {
+  border-color: #4caf50;
+  outline: none;
+  box-shadow: 0 0 4px rgba(76, 175, 80, 0.4);
+}
+
 input::placeholder {
-  font-size: 0.8rem;
-  line-height: 1.3rem;
+  color: #aaa;
 }
-.login-btn-cover {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  height: 2.3rem;
+
+/* 버튼 */
+.button-group {
+  display: flex;
+  justify-content: space-between;
 }
-.modify-btn {
-  border: 1px solid black;
-  background-color: black;
-  color: white;
-  border: none;
-  border-radius: 0.4rem;
-  margin-left: 0.3rem;
+
+button {
+  width: 48%;
+  height: 2.5rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
+
 .cancel-btn {
-  border: 1px solid black;
   background-color: white;
-  border-radius: 0.4rem;
-  margin-right: 0.3rem;
+  border: 1px solid #999;
+  color: #333;
+}
+
+.cancel-btn:hover {
+  background-color: #f1f1f1;
+  border-color: #666;
+}
+
+.modify-btn {
+  background-color: #66bb6a;
+  border: none;
+  color: white;
+}
+
+.modify-btn:hover {
+  background-color: #4caf50;
 }
 </style>

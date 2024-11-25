@@ -2,6 +2,7 @@
   <div class="post">
     <div v-if="loading">로딩중</div>
     <div v-else>
+      <!-- 질문 헤더 -->
       <div class="question-header">
         <div class="question-header-right">
           <div class="ask-icon">
@@ -21,10 +22,13 @@
           <div class="points">{{ this.question.curious }}</div>
         </div>
       </div>
+      
+      <!-- 질문 본문 -->
       <div class="question-body">
         {{ this.question.content }}
       </div>
     
+      <!-- 답글 목록 -->
       <div class="reply-cover">
         <div v-for="answer in question.answers" :key="answer.id" class="reply">
           <div class="reply-header">
@@ -41,7 +45,8 @@
           </div>
         </div>
       </div>
-
+      
+      <!-- 답글 입력 -->
       <div class="reply-input-area">
         <div class="reply-input" contenteditable="true" ref="answer" placeholder="내용을 입력하세요" spellcheck="false">
 
@@ -114,42 +119,80 @@ export default {
 </script>
 
 <style scoped>
+/* 전체 페이지 */
 .post {
-  margin: 0 5rem;
+  margin: 2rem 5rem;
+  font-family: Arial, sans-serif;
 }
+
+/* 질문 헤더 */
 .question-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   border-bottom: 1px solid rgb(219, 219, 219);
-  position: relative;
-  padding-bottom: 0.5rem;
+  padding: 1.5rem 0;
   margin-bottom: 1.5rem;
-  display: flex;
-  padding-top: 3rem;
 }
-.question-detail {
-  font-size: 0.85rem;
-  margin-bottom: 0.5rem;
-  color: grey;
-}
-.reply-header {
-  display: flex;
-  position: relative;
-}
-.reply-user-info {
+
+.question-header-right {
   display: flex;
   align-items: center;
-  font-size: 0.8rem;
 }
-.reply-user-icon {
-  width: 1rem;
-  height: 1rem;
+
+.ask-icon {
+  height: 2.3rem;
+  width: 2.3rem;
+  line-height: 2.3rem;
+  text-align: center;
   border-radius: 50%;
-  background-color: rgb(212, 212, 212);
-  margin-right: 0.4rem;
+  background-color: rgb(78, 197, 61);
+  color: white;
+  font-weight: bold;
+  margin-right: 1rem;
 }
+
+.question-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0.2rem;
+}
+
+.question-detail {
+  font-size: 0.9rem;
+  color: grey;
+}
+
+.question-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.curious-btn {
+  background-color: transparent;
+  border: 1px solid #ddd;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  color: grey;
+  cursor: pointer;
+}
+
+.points {
+  padding: 0.5rem 1rem;
+  background-color: rgb(206, 233, 207);
+  font-size: 0.9rem;
+  text-align: center;
+  border-radius: 1rem;
+}
+
+/* 질문 본문 */
 .question-body {
   border: 1px solid rgba(34, 124, 49, 0.37);
-  border-radius: 1rem;
-  min-height: 10rem;
+
+  border-radius: 0.5rem;
+  height: 10rem;
+  padding: 1rem;
   margin-bottom: 2rem;
   padding: 0.5rem 0.7rem;
 }
@@ -168,73 +211,71 @@ export default {
 .reply-body {
   margin-top: 0.2rem;
 }
+/* 답글 목록 */
+.reply-cover {
+  margin-bottom: 2rem;
+}
 
+.reply {
+  padding: 1rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.reply-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.reply-user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.reply-user-icon {
+  width: 2rem;
+  height: 2rem;
+  background-color: rgb(212, 212, 212);
+  border-radius: 50%;
+}
+
+.reply-content {
+  font-size: 0.9rem;
+  color: #333;
+}
+
+/* 답글 입력 */
 .reply-input-area {
-  display: grid;
-  grid-template-columns: 9fr 1fr;
-  height: 6rem;
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
   border: 1px solid rgba(102, 187, 106, 0.56);
-  margin-bottom: 5rem;
+  align-items: center;
 }
-.reply-input:empty::before, .post-input:empty::before {
-  content: attr(placeholder);
-  color: grey;
-  font-size: 0.9rem;
-}
+
 .reply-input {
-  padding: 0.5rem;
-  font-size: 0.9rem;
-}
-.reply-input:focus {
+  flex: 1;
+  font-size: 1rem;
+  border: none;
   outline: none;
 }
-.reply-input-btn {
-  color: white;
-  background-color: rgb(102, 187, 106);
-  border: 0;
-  height: 2rem;
-  border-radius: 1rem;
-  padding: 0 0.8rem;
-}
-.reply-input-btn-cover {
-  display: flex;
-  align-items: center;
+
+.reply-input::placeholder {
+  color: grey;
 }
 
-.points {
-  border-radius: 1rem;
-  text-align: center;
-  padding: 0.05rem 0;
-  background-color: rgb(206, 233, 207);
-  width: 3.5rem;
-  font-size: 0.9rem;
-}
-.question-header-left {
-  font-size: 0.9rem;
-  display: flex;
-  right: 0;
-  position: absolute;
-}
-.curious-btn {
-  margin-right: 0.5rem;
-  border: none;
-  background: transparent;
-  color: grey;
-  font-size: 0.9rem;
-}
-.question-header-right {
-  display: flex;
-  align-items: center;
-}
-.ask-icon {
-  height: 2.3rem;
-  width: 2.3rem;
-  line-height: 2.2rem;
-  text-align: center;
-  border-radius: 3rem;
-  background: rgb(78, 197, 61);
+.reply-input-btn {
+  background-color: rgb(102, 187, 106);
   color: white;
-  font-weight: bold;
-  margin-right: 0.5rem;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.reply-input-btn:hover {
+  background-color: #4caf50;
 }
 </style>
