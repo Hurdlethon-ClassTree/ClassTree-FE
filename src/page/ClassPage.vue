@@ -1,97 +1,105 @@
 <template>
-  <div class="class-page">
-    <!-- 수업 정보 -->
-    <section class="class-info">
-      <h1 class="class-name">수업1</h1>
-      <p class="class-professor-name">교수 이름</p>
-      <p class="class-info-detail">어떤 질문이던 자유롭게 질문하세요!</p>
-      <button class="class-ask-btn">질문하기</button>
-    </section>
-
-    <!-- 질문 목록 -->
-    <section class="question-list-section">
-      <h2 class="section-title">질문 목록</h2>
-      <div class="post-list">
-        <div class="post" v-for="(post, index) in posts" :key="index">
-          <div class="post-main">
-            <h3 class="post-title">{{ post.title }}</h3>
-            <p class="post-detail">{{ post.detail }}</p>
-            <div class="post-info">
-              <span class="reply-num">답변 {{ post.replies }}</span>
-              <span class="write-time">{{ post.date }}</span>
-              <span class="best-btn">좋아요 {{ post.likes }}</span>
-            </div>
-          </div>
-          <div class="post-point">{{ post.points }}</div>
+  <div v-if="loading">로딩중</div>
+  <div v-else>
+    <div class="class-info">
+      <div class="class-name">{{ this.lecture_name }}</div>
+      <div class="class-professor-name">{{ this.professor_name }}</div>
+      <div class="class-info-detail">어떤 질문이던 자유롭게 질문하세요!</div>
+      <div class="class-ask-btn-cover">
+        <button class="class-ask-btn">질문하기</button>
+      </div>
+    </div>
+    <div class="classpage-title">역대 개설 과목</div>
+    <div class="semestar-list">
+      <div v-for="semestar in this.semestarList" :key="semestar" class="semestar">
+        <div class="semestar-body">
+          <div class="semestar-open-time">{{ semestar }}</div>
+        </div>
+        <div class="semestar-footer">
+          입장하기
         </div>
       </div>
-      <div class="pagination">
-        <button class="page-btn" v-for="page in totalPages" :key="page">
+    </div>
+    <div class="classpage-title">질문 목록</div>
+    <div v-for="question in questionList.slice(10 * (this.currentPage - 1), 10 * this.currentPage)" :key="question.question_id" class="post">
+      <div class="post-main">
+        <div class="post-title">{{ question.title }}</div>
+        <div class="post-detail">
+          {{ question.content }}
+        </div>
+        <div class="post-info">
+          <div class="reply-num">답변 0</div>
+          <div class="write-time">{{ question.created_at.substring(0, 10) }}</div>
+          <div class="best-btn">궁금해요 {{ question.curious }}</div>
+        </div>
+      </div>
+      <div class="post-point">
+        {{ question.point }}
+      </div>
+    </div>
+    <div class="page-list-cover">
+      <div class="page-list">
+        <div class="page-btn" v-for="page in pageList" :key="page" @click="() => {changePage(page)}">
           {{ page }}
-        </button>
-        <button class="next-btn">다음 ></button>
-      </div>
-    </section>
-
-    <!-- 역대 개설 과목 -->
-    <section class="previous-courses">
-      <h2 class="section-title">역대 개설 과목</h2>
-      <div class="semestar-list">
-        <div
-          class="semestar"
-          v-for="course in previousCourses"
-          :key="course.semester"
-        >
-          <div class="semestar-body">
-            <span class="semestar-open-time">{{ course.semester }}</span>
-          </div>
-          <div class="semestar-footer">입장하기</div>
         </div>
+        <button class="left-btn">다음 ></button>
       </div>
-    </section>
+    </div>
+    <div class="search-box-cover">
+      <input type="text" class="search-box" placeholder="제목과 내용을 검색해 보세요" />
+      <div class="question-btn">질문하기</div>
+    </div>
   </div>
 </template>
 
 <script>
+import * as lectureQuestionListApi from "@/api/board/lectureQuestionList";
+
 export default {
   data() {
     return {
-      posts: [
-        {
-          title: "질문 제목 1",
-          detail: "내용 1",
-          replies: 0,
-          date: "2024-11-25",
-          likes: 24,
-          points: 100,
-        },
-        {
-          title: "질문 제목 2",
-          detail: "내용 2",
-          replies: 3,
-          date: "2024-11-24",
-          likes: 15,
-          points: 150,
-        },
-        {
-          title: "질문 제목 3",
-          detail: "내용 3",
-          replies: 1,
-          date: "2024-11-23",
-          likes: 8,
-          points: 50,
-        },
-      ],
-      totalPages: [1, 2, 3, 4, 5],
-      previousCourses: [
-        { semester: "24-1" },
-        { semester: "23-2" },
-        { semester: "23-1" },
-        { semester: "22-2" },
-      ],
-    };
+      loading: true,
+      semestarList: ["24-1", "23-2", "23-2", "22-2"],
+      questionList: [],
+      pageList: [],
+      currentPage: 1,
+    }
   },
-};
+  props: {
+    lecture_id: {
+      type: String,
+      default: null,
+    },
+    lecture_name: {
+      type: String,
+      default: null,
+    },
+    professor_name: {
+      type: String,
+      default: null,
+    }
+  },
+  mounted() {
+    this.fetchData();
+  },
+  methods: {
+    async fetchData() {
+      try {
+        const response = await lectureQuestionListApi.lectureQuestionList(this.lecture_id);
+        this.questionList = response.data.question_list;
+      } catch(err) {
+        alert("질문을 불러오는 도중 문제가 발생하였습니다.");
+      } finally {
+        this.loading = false;
+        const pageNum = Math.ceil(this.questionList.length / 10);
+        this.pageList = Array.from({ length: pageNum }, (_, i) => i + 1);
+      }
+    },
+    changePage(page) {
+      this.currentPage = page;
+    }
+  },
+}
 </script>
 
 <style scoped>
