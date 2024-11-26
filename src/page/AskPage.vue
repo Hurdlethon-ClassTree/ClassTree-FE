@@ -11,6 +11,7 @@
       <div class="ask-page-input">
         <label class="ask-page-input-label">제목</label>
         <input
+          v-model="title"
           class="ask-page-input-area"
           type="text"
           placeholder="제목을 입력하세요"
@@ -19,6 +20,7 @@
       <div class="ask-page-input">
         <label class="ask-page-input-label">수업명</label>
         <input
+          v-model="lecture_name"
           class="ask-page-input-area"
           type="text"
           placeholder="수업명을 선택해 주세요"
@@ -26,16 +28,18 @@
       </div>
       <div class="ask-page-input">
         <label class="ask-page-input-label">내용</label>
-        <div
+        <input
+          v-model="content"
           class="ask-page-input-area ask-page-input-body"
           spellcheck="false"
           placeholder="내용을 입력하세요"
           contenteditable="true"
-        ></div>
+        />
       </div>
       <div class="ask-page-input">
         <label class="ask-page-input-label">리워드 걸기</label>
         <input
+          v-model="reward"
           class="ask-page-input-area"
           type="text"
           placeholder="0점 이상의 포인트를 입력하세요"
@@ -47,20 +51,64 @@
     <div class="name-hide-area">
       <div class="name-hide-label">별명을 가리겠습니까?</div>
       <div class="name-hide-toggle">
-        <input type="checkbox" id="name-hide-checkbox" />
+        <input v-model="hideName" type="checkbox" id="name-hide-checkbox" />
         <label for="name-hide-checkbox" class="toggle-switch"></label>
       </div>
     </div>
 
     <!-- 게시 버튼 -->
     <div class="post-btn-cover">
-      <button class="post-btn">게시하기</button>
+      <button class="post-btn" @click.prevent="askQuestion">게시하기</button>
     </div>
   </div>
 </template>
 
 <script>
-export default {};
+import * as postApi from "@/api/question/postQuestion";
+
+export default {
+  data() {
+    return {
+      lecture_name: null,
+      title: "", // 제목
+      content: "", // 내용
+      reward: "", // 리워드
+      hideName: false, // 별명 가리기 상태
+    };
+  },
+  props: {
+    class_id: {
+      type: String,
+      default: null,
+    },
+  },
+  methods: {
+    // 질문 데이터 전송
+    async askQuestion() {
+      if (!this.title.trim() || !this.content.trim() || !this.reward.trim()) {
+        alert("모든 필드를 입력해 주세요.");
+        return;
+      }
+      try {
+        const response = await postApi.postQuestion(
+          this.class_id,
+          this.title,
+          this.content,
+          parseInt(this.reward, 10),
+          this.hideName
+        );
+        if (response && response.status === 200) {
+          alert("질문이 성공적으로 등록되었습니다.");
+          // 필요한 경우 다른 페이지로 이동
+          this.$router.push(`/class/${this.class_id}`);
+        }
+      } catch (err) {
+        console.error(err);
+        alert("질문 등록 중 문제가 발생했습니다.");
+      }
+    },
+  },
+};
 </script>
 
 <style scoped>

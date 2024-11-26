@@ -49,21 +49,22 @@ export default {
   methods: {
     async fetchData() {
       // 캐싱된 데이터 확인
-      const cachedData = localStorage.getItem("cachedSubjects");
-      if (cachedData) {
-        // 캐싱된 데이터 사용
-        this.subjects = JSON.parse(cachedData);
-        this.loading = false;
-        return;
-      }
+      // const cachedData = localStorage.getItem("cachedSubjects");
+      // if (cachedData) {
+      //   // 캐싱된 데이터 사용
+      //   this.subjects = JSON.parse(cachedData);
+      //   this.loading = false;
+      //   return;
+      // }
 
       // 서버에서 데이터 가져오기
       try {
         const response = await lectureListApi.lectureList();
         this.subjects = response.data.lecture_list;
+        console.log(this.subjects);
 
         // 데이터 캐싱
-        localStorage.setItem("cachedSubjects", JSON.stringify(this.subjects));
+        // localStorage.setItem("cachedSubjects", JSON.stringify(this.subjects));
       } catch (err) {
         console.error(err);
         this.error = "데이터를 불러오는 데 실패했습니다.";
@@ -73,7 +74,7 @@ export default {
     },
     enterClass(lectureId) {
       alert(`클래스 ${lectureId}에 입장합니다.`);
-      // 실제 라우팅이나 로직 추가
+      this.$router.push(`/class/${lectureId}`);
     },
   },
 };

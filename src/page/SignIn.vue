@@ -4,16 +4,20 @@
       <h1 class="banner-title">로그인</h1>
       <p class="banner-description">ClassTree에 오신 것을 환영합니다!</p>
     </div>
-    <form class="signin-form">
+    <div class="signin-form">
       <div class="input-box">
         <label for="username">ID</label>
-        <input id="username" type="text" placeholder="아이디를 입력해 주세요" />
+        <input
+          type="text"
+          v-model="username"
+          placeholder="아이디를 입력해 주세요"
+        />
       </div>
       <div class="input-box">
         <label for="password">Password</label>
         <input
-          id="password"
           type="password"
+          v-model="password"
           placeholder="비밀번호를 입력해 주세요"
         />
       </div>
@@ -21,18 +25,47 @@
         <button type="button" class="search-account-btn">
           아이디/비밀번호 찾기
         </button>
-        <button type="submit" class="login-btn">로그인</button>
+        <button class="login-btn" v-on:click="handleLogin">로그인</button>
       </div>
-    </form>
+    </div>
   </div>
 </template>
 
 <script>
+import * as loginApi from "@/api/user/auth";
+import { mapActions, mapMutations } from "vuex";
+
 export default {
+  data() {
+    return {
+      username: null,
+      password: null,
+    };
+  },
   methods: {
-    handleLogin(event) {
-      event.preventDefault();
-      alert("로그인 버튼 클릭됨");
+    async handleLogin() {
+      // 유효성 검사
+      if (!this.username || !this.password) {
+        alert("아이디와 비밀번호를 모두 입력해 주세요.");
+        return;
+      }
+
+      try {
+        // API 호출
+        const response = await loginApi.login(this.username, this.password);
+        console.log(response.data.user.NICKNAME);
+        if (response && response.status === 200) {
+          this.$store.commit("auth/setLoggedIn", true);
+          this.$store.commit("auth/setNickname", response.data.user.NICKNAME);
+          this.$store.commit("auth/setEmail", response.data.user.email);
+          this.$router.push("/");
+        } else {
+          alert(response.message || "로그인에 실패했습니다.");
+        }
+      } catch (err) {
+        console.error("로그인 에러:", err);
+        alert("서버 오류가 발생했습니다. 다시 시도해 주세요.");
+      }
     },
   },
 };

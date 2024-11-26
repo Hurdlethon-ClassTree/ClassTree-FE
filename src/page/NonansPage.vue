@@ -1,34 +1,50 @@
 <template>
-  <div class="nonans-question">
+  <!-- 로딩 -->
+  <div v-if="loading" class="loading">
+    <div class="spinner"></div>
+    <p>로딩중...</p>
+  </div>
+
+  <!-- 미답변 질문 목록 -->
+  <div v-else class="nonans-question">
     <div class="main-title">나의 미답변 질문 목록</div>
     <div class="main-detail">당신의 답변을 기다리고 있어요!</div>
 
     <div class="question-list">
       <div
         class="question-item"
-        v-for="(question, index) in questions"
-        :key="index"
-      >
+        v-for="question in questions" :key="question">
         <div class="question-title">{{ question.title }}</div>
-        <span class="subject">{{ question.subject }}</span>
+        <span class="subject">{{ question.lecture_id }}</span>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import * as myunansquestionApi from "@/api/question/myunansQuestionList";
+
 export default {
   data() {
     return {
-      questions: [
-        { title: "질문 1", subject: "수업 이름 1" },
-        { title: "질문 2", subject: "수업 이름 2" },
-        { title: "질문 3", subject: "수업 이름 3" },
-        { title: "질문 4", subject: "수업 이름 4" },
-        { title: "질문 5", subject: "수업 이름 5" },
-      ],
+      questions: [],
     };
   },
+  mounted() {
+    this.fetchData();
+  },
+  methods: {
+    async fetchData() {
+      try {
+        const response = await myunansquestionApi.myunansQuestionList();
+        this.questions = response.data;
+      } catch(err) {
+        alert("질문을 불러오는 도중 문제가 발생하였습니다.");
+      } finally {
+        this.loading = false;
+      }
+    }
+  }
 };
 </script>
 
@@ -98,5 +114,28 @@ export default {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* 로딩 애니메이션 */
+.loading {
+  text-align: center;
+  margin-top: 2rem;
+}
+.spinner {
+  margin: 0 auto;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-top: 4px solid #66bb6a;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>

@@ -6,116 +6,241 @@
     <!-- 입력 폼 -->
     <form @submit.prevent="handleSignup">
       <!-- ID -->
-      <label class="label">ID</label>
-      <div class="signup-input-area">
+      <div class="form-group">
+        <label class="label">ID</label>
         <input
           type="text"
-          v-model="form.id"
+          v-model="form.username"
           placeholder="생성할 아이디를 입력해 주세요"
+          class="input"
         />
-        <button
-          type="button"
-          class="signup-input-btn"
-          @click="checkDuplicateId"
-        >
-          중복검사
-        </button>
       </div>
 
       <!-- Password -->
-      <label class="label">Password</label>
-      <input
-        class="signup-input"
-        type="password"
-        v-model="form.password"
-        placeholder="비밀번호를 입력해 주세요"
-      />
+      <div class="form-group">
+        <label class="label">Password</label>
+        <input
+          type="password"
+          v-model="form.password"
+          placeholder="비밀번호를 입력해 주세요"
+          class="input"
+        />
+      </div>
 
       <!-- Confirm Password -->
-      <label class="label">Confirm Password</label>
-      <input
-        class="signup-input"
-        type="password"
-        v-model="form.confirmPassword"
-        placeholder="비밀번호를 다시 입력해 주세요"
-      />
+      <div class="form-group">
+        <label class="label">Confirm Password</label>
+        <input
+          type="password"
+          v-model="form.confirmPassword"
+          placeholder="비밀번호를 다시 입력해 주세요"
+          class="input"
+        />
+      </div>
 
       <!-- Email -->
-      <label class="label">Email</label>
-      <input
-        class="signup-input"
-        type="email"
-        v-model="form.email"
-        placeholder="알림 받을 이메일 주소를 입력해 주세요"
-      />
-
-      <!-- 학교 인증 -->
-      <label class="label">학교 인증하기</label>
-      <div class="signup-input-area">
+      <div class="form-group">
+        <label class="label">Email</label>
         <input
           type="email"
-          v-model="form.schoolEmail"
-          placeholder="학교 이메일 주소를 입력해 주세요"
+          v-model="form.email"
+          placeholder="알림 받을 이메일 주소를 입력해 주세요"
+          class="input"
         />
-        <button
-          type="button"
-          class="signup-input-btn"
-          @click="sendVerificationCode"
-        >
-          인증 번호 발송하기
-        </button>
+      </div>
+
+      <!-- 학교 인증 -->
+      <div class="form-group">
+        <label class="label">학교 인증하기</label>
+        <div class="input-area">
+          <input
+            type="email"
+            v-model="form.schoolEmail"
+            placeholder="학교 이메일 주소를 입력해 주세요"
+            class="input"
+          />
+          <button type="button" class="button" @click="sendVerificationCode">
+            인증번호 발송
+          </button>
+        </div>
+      </div>
+
+      <!-- 인증코드확인 -->
+      <div class="form-group">
+        <label class="label">인증코드</label>
+        <div class="input-area">
+          <input
+            type="text"
+            v-model="form.verificationCode"
+            placeholder="인증코드를 입력해 주세요"
+            class="input"
+          />
+          <button
+            type="button"
+            class="button"
+            @click="checkCode"
+            v-bind:disabled="!codeSended"
+          >
+            인증코드 확인
+          </button>
+        </div>
+      </div>
+
+      <!-- 닉네임 -->
+      <div class="form-group">
+        <label class="label">닉네임</label>
+        <input
+          type="text"
+          v-model="form.nickName"
+          placeholder="닉네임을 입력해주세요"
+          class="input"
+        />
+      </div>
+
+      <!-- 학번 -->
+      <div class="form-group">
+        <label class="label">학번</label>
+        <input
+          type="text"
+          v-model="form.student_number"
+          placeholder="학번을 입력해주세요"
+          class="input"
+        />
+      </div>
+
+      <!-- 전공 -->
+      <div class="form-group">
+        <label class="label">전공</label>
+        <input
+          type="text"
+          v-model="form.major"
+          placeholder="전공을 입력해주세요"
+          class="input"
+        />
       </div>
 
       <!-- 가입하기 버튼 -->
-      <div class="signup-btn-cover">
-        <button type="submit" class="signup-btn">가입하기</button>
+      <div class="form-group">
+        <button
+          type="submit"
+          class="signup-btn"
+          v-bind:disabled="!emailChecked"
+        >
+          가입하기
+        </button>
       </div>
     </form>
   </div>
 </template>
 
 <script>
+import * as signupApi from "@/api/user/signup";
+import * as sendCodeApi from "@/api/user/emailVerification";
+import * as checkCodeApi from "@/api/user/codeVerification";
+
 export default {
   data() {
     return {
       form: {
-        id: "",
+        username: "",
         password: "",
         confirmPassword: "",
         email: "",
         schoolEmail: "",
+        verificationCode: "",
+        nickName: "",
+        student_number: "",
+        major: "",
       },
+      emailChecked: false,
+      codeSended: false,
     };
   },
   methods: {
-    checkDuplicateId() {
-      if (!this.form.id) {
-        alert("아이디를 입력하세요.");
-        return;
-      }
-      alert(`ID "${this.form.id}"의 중복을 확인합니다.`);
-    },
-    sendVerificationCode() {
+    async sendVerificationCode() {
       if (!this.form.schoolEmail) {
         alert("학교 이메일을 입력하세요.");
         return;
       }
-      alert(`"${this.form.schoolEmail}"로 인증 번호를 발송합니다.`);
+      try {
+        const response = await sendCodeApi.emailVerification(
+          this.form.schoolEmail
+        );
+        if (response && response.status === 200) {
+          alert("인증번호가 전송되었습니다.");
+          this.codeSended = true;
+        } else {
+          alert(response.message);
+        }
+      } catch (error) {
+        alert("인증번호 발송 중 문제가 발생했습니다.");
+      }
     },
-    handleSignup() {
+    async checkCode() {
+      if (!this.form.verificationCode) {
+        alert("인증번호를 입력하세요.");
+        return;
+      }
+      try {
+        const response = await checkCodeApi.codeVerification(
+          this.form.verificationCode
+        );
+        if (response && response.status === 200) {
+          alert("인증되었습니다.");
+          this.emailChecked = true;
+        } else {
+          alert(response.message);
+        }
+      } catch (error) {
+        alert("인증번호 확인 중 문제가 발생했습니다.");
+      }
+    },
+    async handleSignup() {
       if (!this.validateForm()) return;
-      alert("가입이 완료되었습니다!");
+
+      try {
+        const response = await signupApi.signup(this.form);
+        if (response && response.status === 200) {
+          alert("회원가입에 성공하였습니다.");
+          this.$router.push("/signin");
+        } else {
+          alert(response.message);
+        }
+      } catch (error) {
+        alert("가입 중 문제가 발생했습니다.");
+      }
     },
     validateForm() {
-      const { id, password, confirmPassword, email, schoolEmail } = this.form;
-      if (!id || !password || !confirmPassword || !email || !schoolEmail) {
+      const {
+        username,
+        password,
+        confirmPassword,
+        email,
+        schoolEmail,
+        nickName,
+        student_number,
+        major,
+      } = this.form;
+
+      if (
+        !username ||
+        !password ||
+        !confirmPassword ||
+        !email ||
+        !schoolEmail ||
+        !nickName ||
+        !student_number ||
+        !major
+      ) {
         alert("모든 항목을 입력해주세요.");
         return false;
       }
+
       if (password !== confirmPassword) {
         alert("비밀번호가 일치하지 않습니다.");
         return false;
       }
+
       return true;
     },
   },
@@ -123,17 +248,16 @@ export default {
 </script>
 
 <style scoped>
-/* 전체 레이아웃 */
 .signup {
   display: flex;
   flex-direction: column;
   gap: 2rem;
   padding: 2rem;
-  max-width: 100%;
+  max-width: 600px; /* 모든 필드의 최대 너비 설정 */
+  margin: 0 auto; /* 가운데 정렬 */
   box-sizing: border-box;
 }
 
-/* 타이틀 */
 .signup-title {
   font-size: 2rem;
   font-weight: bold;
@@ -141,7 +265,13 @@ export default {
   margin-bottom: 1.5rem;
 }
 
-/* 라벨 */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  width: 100%; /* 부모 컨테이너 기준 너비 100% */
+  margin-bottom: 1rem;
+}
+
 .label {
   font-size: 1rem;
   font-weight: bold;
@@ -149,21 +279,24 @@ export default {
   display: block;
 }
 
-/* 입력 필드와 버튼 */
-.signup-input-area {
+.input-area {
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 1.5rem;
+  width: 100%; /* 버튼 포함 필드도 부모 기준 100% */
 }
-.signup-input-area input {
-  flex: 1;
+
+.input {
+  flex: 1; /* 입력창이 남은 공간을 차지 */
   padding: 1rem;
   font-size: 1rem;
   border: 1px solid #ddd;
   border-radius: 0.5rem;
+  box-sizing: border-box;
 }
-.signup-input-btn {
+
+.button {
+  flex-shrink: 0; /* 버튼의 크기를 고정 */
   background-color: #66bb6a;
   color: white;
   border: none;
@@ -174,27 +307,20 @@ export default {
   white-space: nowrap;
   transition: background-color 0.3s ease;
 }
-.signup-input-btn:hover {
+
+.button:hover {
   background-color: #4caf50;
 }
 
-/* 일반 입력 필드 */
-.signup-input {
-  width: 100%;
-  padding: 1rem;
-  font-size: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 0.5rem;
-  margin-bottom: 1.5rem;
-}
-.signup-input:focus {
-  border-color: #66bb6a;
-  outline: none;
+.button:disabled {
+  background-color: #4caf50; /* 동일한 배경색 유지 */
+  color: white; /* 동일한 글자색 유지 */
+  opacity: 0.5; /* 흐리게 처리 */
+  cursor: not-allowed; /* 클릭 불가 */
 }
 
-/* 가입하기 버튼 */
 .signup-btn {
-  width: 100%;
+  width: 100%; /* 가입하기 버튼도 최대 너비 */
   background-color: #66bb6a;
   color: white;
   border: none;
@@ -204,15 +330,15 @@ export default {
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
+
 .signup-btn:hover {
   background-color: #4caf50;
 }
 
-/* 반응형 디자인 */
-@media (max-width: 768px) {
-  .signup-input-btn {
-    font-size: 0.9rem;
-    padding: 0.6rem 1rem;
-  }
+.signup-btn:disabled {
+  background-color: #4caf50; /* 동일한 배경색 유지 */
+  color: white; /* 동일한 글자색 유지 */
+  opacity: 0.5; /* 흐리게 처리 */
+  cursor: not-allowed; /* 클릭 불가 */
 }
 </style>
