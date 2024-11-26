@@ -1,6 +1,6 @@
 import http from '@/api/http';
 
-export function preferQuestionList() {
+export function myunansQuestionList() {
     return http.get('/favorite/', {
     });
 }

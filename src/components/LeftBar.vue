@@ -1,8 +1,5 @@
 <template>
   <div class="left-bar">
-    <router-link to="/ask" class="link">
-      <div class="left-bar-menu">질문하기</div>
-    </router-link>
     <router-link to="/myclass" class="link">
       <div class="left-bar-menu">나의 강의실</div>
     </router-link>

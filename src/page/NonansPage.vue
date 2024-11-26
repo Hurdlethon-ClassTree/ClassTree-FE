@@ -1,6 +1,12 @@
 <template>
-  <div v-if="loading">로딩중</div>
-  <div else if class="nonans-question">
+  <!-- 로딩 -->
+  <div v-if="loading" class="loading">
+    <div class="spinner"></div>
+    <p>로딩중...</p>
+  </div>
+
+  <!-- 미답변 질문 목록 -->
+  <div v-else class="nonans-question">
     <div class="main-title">나의 미답변 질문 목록</div>
     <div class="main-detail">당신의 답변을 기다리고 있어요!</div>
 
@@ -16,7 +22,7 @@
 </template>
 
 <script>
-import * as preferquestionApi from "@/api/question/preferQuestionList";
+import * as myunansquestionApi from "@/api/question/myunansQuestionList";
 
 export default {
   data() {
@@ -30,7 +36,7 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const response = await preferquestionApi.preferQuestionList();
+        const response = await myunansquestionApi.myunansQuestionList();
         this.questions = response.data;
       } catch(err) {
         alert("질문을 불러오는 도중 문제가 발생하였습니다.");
@@ -108,5 +114,28 @@ export default {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* 로딩 애니메이션 */
+.loading {
+  text-align: center;
+  margin-top: 2rem;
+}
+.spinner {
+  margin: 0 auto;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-top: 4px solid #66bb6a;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>

@@ -1,5 +1,11 @@
 <template>
-  <div class="myquestion-container">
+  <!-- 로딩 -->
+  <div v-if="loading" class="loading">
+    <div class="spinner"></div>
+    <p>로딩중...</p>
+  </div>
+
+  <div v-else class="myquestion-container">
     <!-- 타이틀 -->
     <div class="myquestion-header">나의 질문 목록</div>
 
@@ -139,6 +145,29 @@ export default {
 @media (max-width: 768px) {
   .nonans-question-row {
     grid-template-columns: 1fr;
+  }
+}
+
+/* 로딩 애니메이션 */
+.loading {
+  text-align: center;
+  margin-top: 2rem;
+}
+.spinner {
+  margin: 0 auto;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-top: 4px solid #66bb6a;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }
 </style>
