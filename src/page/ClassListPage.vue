@@ -70,7 +70,6 @@ export default {
     enterClass(lecture) {
       this.$router.push({
         path: `/class/${lecture.lecture_id}`,
-        query: { lecture },
       });
     },
   },

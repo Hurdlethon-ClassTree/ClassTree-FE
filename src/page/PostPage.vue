@@ -1,13 +1,15 @@
 <template>
   <div class="post">
-    <div v-if="loading">로딩중</div>
+    <!-- 로딩 중 -->
+    <div v-if="loading" class="loading">
+      <div class="spinner"></div>
+      <p>로딩중...</p>
+    </div>
     <div v-else>
       <!-- 질문 헤더 -->
       <div class="question-header">
         <div class="question-header-right">
-          <div class="ask-icon">
-            ?
-          </div>
+          <div class="ask-icon">?</div>
           <div>
             <div class="question-title">
               {{ this.question.title }}
@@ -18,16 +20,18 @@
           </div>
         </div>
         <div class="question-header-left">
-          <button class="curious-btn" @click="increaseCurious">나도 궁금해요! {{ this.curious }}</button>
+          <button class="curious-btn" @click="increaseCurious">
+            나도 궁금해요! {{ this.curious }}
+          </button>
           <div class="points">{{ this.question.curious }}</div>
         </div>
       </div>
-      
+
       <!-- 질문 본문 -->
       <div class="question-body">
         {{ this.question.content }}
       </div>
-    
+
       <!-- 답글 목록 -->
       <div class="reply-cover">
         <div v-for="answer in question.answers" :key="answer.id" class="reply">
@@ -36,21 +40,23 @@
               <div class="reply-user-icon"></div>
               <div>{{ answer.user_id }}</div>
             </div>
-            <div class="reply-options">
-              ···
-            </div>
+            <div class="reply-options">···</div>
           </div>
           <div class="reply-body">
             {{ answer.content }}
           </div>
         </div>
       </div>
-      
+
       <!-- 답글 입력 -->
       <div class="reply-input-area">
-        <div class="reply-input" contenteditable="true" ref="answer" placeholder="내용을 입력하세요" spellcheck="false">
-
-        </div>
+        <div
+          class="reply-input"
+          contenteditable="true"
+          ref="answer"
+          placeholder="내용을 입력하세요"
+          spellcheck="false"
+        ></div>
         <div class="reply-input-btn-cover">
           <button class="reply-input-btn" @click="postAnswer">답글 달기</button>
         </div>
@@ -71,13 +77,13 @@ export default {
       question: {},
       content: "",
       curious: 0,
-    }
+    };
   },
   props: {
     question_id: {
       type: String,
       default: "0",
-    }
+    },
   },
   mounted() {
     this.fetchData();
@@ -87,22 +93,22 @@ export default {
       try {
         const response = await questionApi.questionDetail(this.question_id);
         this.question = response.data;
-      } catch(err) {
+      } catch (err) {
         alert("질문을 불러오는 도중 문제가 발생하였습니다.");
       } finally {
         this.loading = false;
         this.curious = this.question.curious;
       }
-    }
+    },
   },
   async postAnswer() {
     const answer = this.$refs.answer.innerText;
     try {
-      const response = await answerPost.postAnswer(this.question_id, answer);
+      const response = await answerPost.postAnswer(this.post_id, answer);
       if (!response) {
         alert("답글 게시 중 문제가 발생하였습니다.");
       }
-    } catch(err) {
+    } catch (err) {
       alert("답글 게시 중 문제가 발생하였습니다.");
     } finally {
       this.$refs.answer.innerText = "";
@@ -110,12 +116,17 @@ export default {
   },
   async increaseCurious() {
     try {
-      questionPut.putQuestion(this.question_id, this.question.title, this.question.content, this.curious + 1);
+      questionPut.putQuestion(
+        this.question_id,
+        this.question.title,
+        this.question.content,
+        this.curious + 1
+      );
     } finally {
       this.curious = this.question.curious + 1;
     }
-  }
-}
+  },
+};
 </script>
 
 <style scoped>
@@ -123,6 +134,29 @@ export default {
 .post {
   margin: 2rem 5rem;
   font-family: Arial, sans-serif;
+}
+
+/* 로딩 애니메이션 */
+.loading {
+  text-align: center;
+  margin-top: 2rem;
+}
+.spinner {
+  margin: 0 auto;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-top: 4px solid #66bb6a;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* 질문 헤더 */

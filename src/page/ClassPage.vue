@@ -5,7 +5,9 @@
       <h2 class="class-name">{{ lecture_name }}</h2>
       <p class="class-professor">교수님: {{ professor_name }}</p>
       <p class="class-description">자유롭게 질문하세요!</p>
-      <button class="ask-button" @click="askQuestion">질문하기</button>
+      <button class="ask-button" @click="askQuestion(lecture_id)">
+        질문하기
+      </button>
     </div>
 
     <!-- 로딩 중 -->
@@ -32,6 +34,7 @@
             v-for="question in questionList"
             :key="question.question_id"
             class="question-row"
+            @click="enterQuestion(question)"
           >
             <div class="question-title">{{ question.title }}</div>
             <div class="question-points">+{{ question.point }}</div>
@@ -90,6 +93,16 @@ export default {
     formatDate(dateString) {
       const options = { year: "numeric", month: "short", day: "numeric" };
       return new Date(dateString).toLocaleDateString("ko-KR", options);
+    },
+    enterQuestion(question) {
+      this.$router.push({
+        path: `/post/${question.question_id}`,
+      });
+    },
+    askQuestion(lecture_id) {
+      this.$router.push({
+        path: `/class/${lecture_id}/ask`,
+      });
     },
   },
 };

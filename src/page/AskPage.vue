@@ -60,7 +60,14 @@
 </template>
 
 <script>
-export default {};
+export default {
+  props: {
+    lecture_id: {
+      type: String,
+      default: null,
+    },
+  },
+};
 </script>
 
 <style scoped>

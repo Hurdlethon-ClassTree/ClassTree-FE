@@ -19,9 +19,10 @@ const router = createRouter({
       component: () => import('../page/SignUp.vue'),
     },
     {
-      path: '/ask',
+      path: '/class/:class_id/ask',
       name: 'ask',
       component: () => import('../page/AskPage.vue'),
+      props : true
     },
     {
       path: '/post',
@@ -45,9 +46,10 @@ const router = createRouter({
       props : true
     },
     {
-      path: '/post',
+      path: '/post/:question_id',
       name: 'post',
-      component: () => import('../page/PostPage.vue')
+      component: () => import('../page/PostPage.vue'),
+      props: true
     },
     {
       path: '/searchhistory',
