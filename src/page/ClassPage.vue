@@ -5,7 +5,7 @@
       <h2 class="class-name">{{ lecture_name }}</h2>
       <p class="class-professor">교수님: {{ professor_name }}</p>
       <p class="class-description">자유롭게 질문하세요!</p>
-      <button class="ask-button" @click="askQuestion(lecture_id)">
+      <button class="ask-button" @click="moveToAskPage(lecture_id)">
         질문하기
       </button>
     </div>
@@ -51,8 +51,12 @@
 
 <script>
 import * as lectureQuestionListApi from "@/api/board/lectureQuestionList";
+import { mapState } from "vuex";
 
 export default {
+  computed: {
+    ...mapState("auth", ["loggedIn"]),
+  },
   data() {
     return {
       loading: true,
@@ -99,10 +103,17 @@ export default {
         path: `/post/${question.question_id}`,
       });
     },
-    askQuestion(lecture_id) {
-      this.$router.push({
-        path: `/class/${lecture_id}/ask`,
-      });
+    moveToAskPage(lecture_id) {
+      if (this.loggedIn) {
+        this.$router.push({
+          path: `/class/${lecture_id}/ask`,
+        });
+      } else {
+        alert("먼저 로그인을 해주세요.");
+        this.$router.push({
+          path: `/signin`,
+        });
+      }
     },
   },
 };

@@ -20,10 +20,14 @@
           </div>
         </div>
         <div class="question-header-left">
-          <button class="curious-btn" @click="increaseCurious">
-            나도 궁금해요! {{ this.curious }}
+          <button
+            class="curious-btn"
+            :class="{ active: curiousState }"
+            @click="increaseCurious"
+          >
+            나도 궁금해요!
           </button>
-          <div class="points">{{ this.question.curious }}</div>
+          <div class="points">{{ this.curious }}</div>
         </div>
       </div>
 
@@ -68,15 +72,20 @@
 <script>
 import * as questionApi from "@/api/board/questionDetail";
 import * as answerPost from "@/api/answer/postAnswer";
-import * as questionPut from "@/api/question/putQuestion";
+import * as curiousApi from "@/api/question/curious";
+import { mapState } from "vuex";
 
 export default {
+  computed: {
+    ...mapState("auth", ["loggedIn"]),
+  },
   data() {
     return {
       loading: true,
       question: {},
       content: "",
       curious: 0,
+      curiousState: false,
     };
   },
   props: {
@@ -100,31 +109,40 @@ export default {
         this.curious = this.question.curious;
       }
     },
-  },
-  async postAnswer() {
-    const answer = this.$refs.answer.innerText;
-    try {
-      const response = await answerPost.postAnswer(this.post_id, answer);
-      if (!response) {
-        alert("답글 게시 중 문제가 발생하였습니다.");
+    async postAnswer() {
+      if (this.loggedIn) {
+        const answer = this.$refs.answer.innerText;
+        try {
+          const response = await answerPost.postAnswer(
+            this.question_id,
+            answer
+          );
+          if (!response) {
+            alert("답글 게시 중 문제가 발생하였습니다.");
+          }
+        } catch (err) {
+          alert("답글 게시 중 문제가 발생하였습니다.");
+        } finally {
+          this.$refs.answer.innerText = "";
+          this.fetchData();
+        }
+      } else {
+        alert("먼저 로그인을 해주세요.");
       }
-    } catch (err) {
-      alert("답글 게시 중 문제가 발생하였습니다.");
-    } finally {
-      this.$refs.answer.innerText = "";
-    }
-  },
-  async increaseCurious() {
-    try {
-      questionPut.putQuestion(
-        this.question_id,
-        this.question.title,
-        this.question.content,
-        this.curious + 1
-      );
-    } finally {
-      this.curious = this.question.curious + 1;
-    }
+    },
+    async increaseCurious() {
+      if (this.loggedIn) {
+        try {
+          const response = await curiousApi.curious(this.question_id);
+          this.curious = response.data.curious_count;
+          this.curiousState = response.data.state;
+        } catch (err) {
+          console.error(err);
+        }
+      } else {
+        alert("먼저 로그인을 해주세요.");
+      }
+    },
   },
 };
 </script>
@@ -203,13 +221,22 @@ export default {
   gap: 0.5rem;
 }
 
+/* "궁금해요" 버튼 기본 스타일 */
 .curious-btn {
-  background-color: transparent;
+  background-color: white;
   border: 1px solid #ddd;
   padding: 0.5rem 1rem;
   font-size: 0.9rem;
   color: grey;
   cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* 활성화된 상태 */
+.curious-btn.active {
+  background-color: #d8f3dc; /* 연초록색 */
+  color: #4caf50; /* 초록색 텍스트 */
+  border: 1px solid #4caf50;
 }
 
 .points {
