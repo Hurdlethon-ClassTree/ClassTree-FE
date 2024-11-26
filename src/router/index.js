@@ -39,9 +39,10 @@ const router = createRouter({
       component: () => import('../page/ClassListPage.vue')
     },
     {
-      path: '/class',
+      path: '/class/:lecture_id',
       name: 'class',
-      component: () => import('../page/ClassPage.vue')
+      component: () => import('../page/ClassPage.vue'),
+      props : true
     },
     {
       path: '/post',

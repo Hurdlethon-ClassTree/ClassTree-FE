@@ -1,53 +1,47 @@
 <template>
-  <div v-if="loading">로딩중</div>
-  <div v-else>
+  <div class="classroom">
+    <!-- 강의실 정보 -->
     <div class="class-info">
-      <div class="class-name">{{ this.lecture_name }}</div>
-      <div class="class-professor-name">{{ this.professor_name }}</div>
-      <div class="class-info-detail">어떤 질문이던 자유롭게 질문하세요!</div>
-      <div class="class-ask-btn-cover">
-        <button class="class-ask-btn">질문하기</button>
-      </div>
+      <h2 class="class-name">{{ lecture_name }}</h2>
+      <p class="class-professor">교수님: {{ professor_name }}</p>
+      <p class="class-description">자유롭게 질문하세요!</p>
+      <button class="ask-button" @click="askQuestion">질문하기</button>
     </div>
-    <div class="classpage-title">역대 개설 과목</div>
-    <div class="semestar-list">
-      <div v-for="semestar in this.semestarList" :key="semestar" class="semestar">
-        <div class="semestar-body">
-          <div class="semestar-open-time">{{ semestar }}</div>
-        </div>
-        <div class="semestar-footer">
-          입장하기
-        </div>
-      </div>
+
+    <!-- 로딩 중 -->
+    <div v-if="loading" class="loading">
+      <div class="spinner"></div>
+      <p>로딩중...</p>
     </div>
-    <div class="classpage-title">질문 목록</div>
-    <div v-for="question in questionList.slice(10 * (this.currentPage - 1), 10 * this.currentPage)" :key="question.question_id" class="post">
-      <div class="post-main">
-        <div class="post-title">{{ question.title }}</div>
-        <div class="post-detail">
-          {{ question.content }}
-        </div>
-        <div class="post-info">
-          <div class="reply-num">답변 0</div>
-          <div class="write-time">{{ question.created_at.substring(0, 10) }}</div>
-          <div class="best-btn">궁금해요 {{ question.curious }}</div>
+
+    <!-- 질문 목록 -->
+    <div v-else>
+      <div v-if="error" class="error-message">{{ error }}</div>
+      <div class="questionlist">
+        <div class="questionlist-title">질문 목록</div>
+        <div class="question-table">
+          <!-- 헤더 -->
+          <div class="question-row header">
+            <div class="question-title">질문 제목</div>
+            <div class="question-points">포인트</div>
+            <div class="question-date">작성일</div>
+            <div class="question-actions">궁금해요</div>
+          </div>
+          <!-- 데이터 -->
+          <div
+            v-for="question in questionList"
+            :key="question.question_id"
+            class="question-row"
+          >
+            <div class="question-title">{{ question.title }}</div>
+            <div class="question-points">+{{ question.point }}</div>
+            <div class="question-date">
+              {{ formatDate(question.created_at) }}
+            </div>
+            <button class="like-button">궁금해요 {{ question.curious }}</button>
+          </div>
         </div>
       </div>
-      <div class="post-point">
-        {{ question.point }}
-      </div>
-    </div>
-    <div class="page-list-cover">
-      <div class="page-list">
-        <div class="page-btn" v-for="page in pageList" :key="page" @click="() => {changePage(page)}">
-          {{ page }}
-        </div>
-        <button class="left-btn">다음 ></button>
-      </div>
-    </div>
-    <div class="search-box-cover">
-      <input type="text" class="search-box" placeholder="제목과 내용을 검색해 보세요" />
-      <div class="question-btn">질문하기</div>
     </div>
   </div>
 </template>
@@ -59,11 +53,8 @@ export default {
   data() {
     return {
       loading: true,
-      semestarList: ["24-1", "23-2", "23-2", "22-2"],
       questionList: [],
-      pageList: [],
-      currentPage: 1,
-    }
+    };
   },
   props: {
     lecture_id: {
@@ -72,12 +63,12 @@ export default {
     },
     lecture_name: {
       type: String,
-      default: null,
+      default: "강의 이름",
     },
     professor_name: {
       type: String,
-      default: null,
-    }
+      default: "교수님 이름",
+    },
   },
   mounted() {
     this.fetchData();
@@ -85,179 +76,180 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const response = await lectureQuestionListApi.lectureQuestionList(this.lecture_id);
+        const response = await lectureQuestionListApi.lectureQuestionList(
+          this.lecture_id
+        );
         this.questionList = response.data.question_list;
-      } catch(err) {
-        alert("질문을 불러오는 도중 문제가 발생하였습니다.");
+      } catch (err) {
+        alert("질문을 불러오는 도중 문제가 발생했습니다.");
+        console.error(err);
       } finally {
         this.loading = false;
-        const pageNum = Math.ceil(this.questionList.length / 10);
-        this.pageList = Array.from({ length: pageNum }, (_, i) => i + 1);
       }
     },
-    changePage(page) {
-      this.currentPage = page;
-    }
+    formatDate(dateString) {
+      const options = { year: "numeric", month: "short", day: "numeric" };
+      return new Date(dateString).toLocaleDateString("ko-KR", options);
+    },
   },
-}
+};
 </script>
 
 <style scoped>
-/* 전체 페이지 스타일 */
-.class-page {
-  font-family: Arial, sans-serif;
-  padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  background-color: white;
+/* 전체 컨테이너 */
+.classroom {
+  margin: 2rem;
 }
 
-/* 수업 정보 섹션 */
+/* 강의실 정보 */
 .class-info {
   text-align: center;
   margin-bottom: 2rem;
-  padding: 2rem 0;
-  border-bottom: 1px solid #ddd;
+  padding: 1.5rem;
+  background-color: #eaffea; /* 연한 연두색 배경 */
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 
 .class-name {
   font-size: 1.8rem;
   font-weight: bold;
+  margin-bottom: 0.5rem;
 }
 
-.class-professor-name {
+.class-professor {
+  font-size: 1.2rem;
+  color: #555;
+  margin-bottom: 1rem;
+}
+
+.class-description {
   font-size: 1rem;
-  color: grey;
+  color: #666;
+  margin-bottom: 1rem;
 }
 
-.class-info-detail {
-  font-size: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.class-ask-btn {
+/* 질문하기 버튼 */
+.ask-button {
   background-color: #66bb6a;
   color: white;
   border: none;
   padding: 0.8rem 1.5rem;
+  border-radius: 4px;
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-.class-ask-btn:hover {
+.ask-button:hover {
   background-color: #4caf50;
 }
 
-/* 질문 목록 섹션 */
-.question-list-section {
-  margin-bottom: 2rem;
+/* 로딩 애니메이션 */
+.loading {
+  text-align: center;
+  margin-top: 2rem;
+}
+.spinner {
+  margin: 0 auto;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-top: 4px solid #66bb6a;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
-.section-title {
+/* 질문 목록 */
+.questionlist-title {
   font-size: 1.5rem;
   font-weight: bold;
+  text-align: center;
   margin-bottom: 1rem;
 }
 
-.post-list {
+.question-table {
+  border-top: 1px solid #ddd;
+  margin-top: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 0.5rem;
 }
 
-.post {
+/* 질문 행 */
+.question-row {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
   border-bottom: 1px solid #ddd;
-  padding: 1rem 0;
+  background-color: #f9f9f9;
+  transition: background-color 0.3s ease;
+}
+.question-row:hover {
+  background-color: #f0f0f0;
 }
 
-.post-main {
-  max-width: 80%;
-}
-
-.post-title {
-  font-size: 1.2rem;
+/* 질문 헤더 */
+.header {
   font-weight: bold;
-  margin-bottom: 0.5rem;
-}
-
-.post-detail {
-  font-size: 1rem;
-  color: grey;
-  margin-bottom: 1rem;
-}
-
-.post-info {
-  font-size: 0.9rem;
-  display: flex;
-  gap: 1rem;
-  color: #555;
-}
-
-.post-point {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #66bb6a;
-  text-align: right;
-}
-
-/* 페이지네이션 */
-.pagination {
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-  margin-top: 2rem;
-}
-
-.page-btn,
-.next-btn {
   background-color: #f1f1f1;
-  color: #333;
-  border: none;
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-  cursor: pointer;
+  border-bottom: 2px solid #ddd;
 }
 
-.page-btn:hover,
-.next-btn:hover {
-  background-color: #ddd;
-}
-
-/* 역대 개설 과목 */
-.previous-courses {
-  margin-top: 2rem;
-}
-
-.semestar-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  gap: 1.5rem;
-}
-
-.semestar-body {
-  text-align: center;
+/* 질문 열 스타일 */
+.question-title {
+  flex: 3;
   font-size: 1rem;
-  padding: 1rem 0;
-  border-bottom: 1px solid #ddd;
-}
-
-.semestar-open-time {
-  font-size: 1.2rem;
   font-weight: bold;
+  color: #333;
 }
-
-.semestar-footer {
+.question-points {
+  flex: 1;
   text-align: center;
-  padding: 0.5rem 0;
   font-size: 0.9rem;
-  color: #66bb6a;
-  cursor: pointer;
+  color: #4caf50;
+}
+.question-date {
+  flex: 1;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #777;
+}
+.question-actions {
+  flex: 1;
+  text-align: center;
 }
 
-.semestar-footer:hover {
-  text-decoration: underline;
+/* 궁금해요 버튼 */
+.like-button {
+  background-color: #ffeb3b;
+  color: #333;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease;
+}
+.like-button:hover {
+  background-color: #fdd835;
+}
+
+/* 에러 메시지 */
+.error-message {
+  text-align: center;
+  color: red;
+  font-weight: bold;
+  margin-bottom: 2rem;
 }
 </style>

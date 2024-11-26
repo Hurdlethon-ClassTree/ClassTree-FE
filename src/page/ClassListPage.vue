@@ -19,10 +19,7 @@
           <div class="class-subject-name">{{ subject.lecture_name }}</div>
           <div class="class-professor-name">{{ subject.lecture_code }}</div>
           <div class="class-in-btn-cover">
-            <button
-              class="class-in-btn"
-              @click="enterClass(subject.lecture_id)"
-            >
+            <button class="class-in-btn" @click="enterClass(subject)">
               입장하기
             </button>
           </div>
@@ -60,8 +57,7 @@ export default {
       // 서버에서 데이터 가져오기
       try {
         const response = await lectureListApi.lectureList();
-        this.subjects = response.data;
-        console.log(this.subjects);
+        this.subjects = response.data.lecture_list;
         // 데이터 캐싱
         // localStorage.setItem("cachedSubjects", JSON.stringify(this.subjects));
       } catch (err) {
@@ -71,9 +67,11 @@ export default {
         this.loading = false;
       }
     },
-    enterClass(lectureId) {
-      alert(`클래스 ${lectureId}에 입장합니다.`);
-      // 실제 라우팅이나 로직 추가
+    enterClass(lecture) {
+      this.$router.push({
+        path: `/class/${lecture.lecture_id}`,
+        query: { lecture },
+      });
     },
   },
 };
