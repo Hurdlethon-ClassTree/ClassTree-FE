@@ -1,34 +1,44 @@
 <template>
-  <div class="nonans-question">
+  <div v-if="loading">로딩중</div>
+  <div else if class="nonans-question">
     <div class="main-title">나의 미답변 질문 목록</div>
     <div class="main-detail">당신의 답변을 기다리고 있어요!</div>
 
     <div class="question-list">
       <div
         class="question-item"
-        v-for="(question, index) in questions"
-        :key="index"
-      >
+        v-for="question in questions" :key="question">
         <div class="question-title">{{ question.title }}</div>
-        <span class="subject">{{ question.subject }}</span>
+        <span class="subject">{{ question.lecture_id }}</span>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import * as preferquestionApi from "@/api/question/preferQuestionList";
+
 export default {
   data() {
     return {
-      questions: [
-        { title: "질문 1", subject: "수업 이름 1" },
-        { title: "질문 2", subject: "수업 이름 2" },
-        { title: "질문 3", subject: "수업 이름 3" },
-        { title: "질문 4", subject: "수업 이름 4" },
-        { title: "질문 5", subject: "수업 이름 5" },
-      ],
+      questions: [],
     };
   },
+  mounted() {
+    this.fetchData();
+  },
+  methods: {
+    async fetchData() {
+      try {
+        const response = await preferquestionApi.preferQuestionList();
+        this.questions = response.data;
+      } catch(err) {
+        alert("질문을 불러오는 도중 문제가 발생하였습니다.");
+      } finally {
+        this.loading = false;
+      }
+    }
+  }
 };
 </script>
 
