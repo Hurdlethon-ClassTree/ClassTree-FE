@@ -2,8 +2,7 @@
   <div class="ask-page">
     <!-- 상단 로고 및 설명 -->
     <div class="ask-page-header">
-      <div class="ask-page-logo">💡 질문하기</div>
-      <p>궁금한 내용을 입력하고 다른 사람들의 도움을 받아보세요!</p>
+      <div class="ask-page-logo">질문하기</div>
     </div>
 
     <!-- 입력 폼 -->
@@ -11,6 +10,7 @@
       <div class="ask-page-input">
         <label class="ask-page-input-label">제목</label>
         <input
+          v-model="title"
           class="ask-page-input-area"
           type="text"
           placeholder="제목을 입력하세요"
@@ -19,6 +19,7 @@
       <div class="ask-page-input">
         <label class="ask-page-input-label">수업명</label>
         <input
+          v-model="lecture_name"
           class="ask-page-input-area"
           type="text"
           placeholder="수업명을 선택해 주세요"
@@ -26,16 +27,19 @@
       </div>
       <div class="ask-page-input">
         <label class="ask-page-input-label">내용</label>
-        <div
+        <textarea
+          v-model="content"
           class="ask-page-input-area ask-page-input-body"
           spellcheck="false"
           placeholder="내용을 입력하세요"
           contenteditable="true"
-        ></div>
+        >
+      </textarea>
       </div>
       <div class="ask-page-input">
         <label class="ask-page-input-label">리워드 걸기</label>
         <input
+          v-model="reward"
           class="ask-page-input-area"
           type="text"
           placeholder="0점 이상의 포인트를 입력하세요"
@@ -47,20 +51,64 @@
     <div class="name-hide-area">
       <div class="name-hide-label">별명을 가리겠습니까?</div>
       <div class="name-hide-toggle">
-        <input type="checkbox" id="name-hide-checkbox" />
+        <input v-model="hideName" type="checkbox" id="name-hide-checkbox" />
         <label for="name-hide-checkbox" class="toggle-switch"></label>
       </div>
     </div>
 
     <!-- 게시 버튼 -->
     <div class="post-btn-cover">
-      <button class="post-btn">게시하기</button>
+      <button class="post-btn" @click.prevent="askQuestion">게시하기</button>
     </div>
   </div>
 </template>
 
 <script>
-export default {};
+import * as postApi from "@/api/question/postQuestion";
+
+export default {
+  data() {
+    return {
+      lecture_name: null,
+      title: "", // 제목
+      content: "", // 내용
+      reward: "", // 리워드
+      hideName: false, // 별명 가리기 상태
+    };
+  },
+  props: {
+    class_id: {
+      type: String,
+      default: null,
+    },
+  },
+  methods: {
+    // 질문 데이터 전송
+    async askQuestion() {
+      if (!this.title.trim() || !this.content.trim() || !this.reward.trim()) {
+        alert("모든 필드를 입력해 주세요.");
+        return;
+      }
+      try {
+        const response = await postApi.postQuestion(
+          this.class_id,
+          this.title,
+          this.content,
+          parseInt(this.reward, 10),
+          this.hideName
+        );
+        if (response && response.status === 200) {
+          alert("질문이 성공적으로 등록되었습니다.");
+          // 필요한 경우 다른 페이지로 이동
+          this.$router.push(`/class/${this.class_id}`);
+        }
+      } catch (err) {
+        console.error(err);
+        alert("질문 등록 중 문제가 발생했습니다.");
+      }
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -71,48 +119,37 @@ export default {};
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: calc(100vh - 3.5rem); /* 헤더 높이 제외 */
-  padding: 2rem;
+  padding: 2rem 4rem;
   box-sizing: border-box;
-  background-color: #f9f9f9;
   overflow-y: auto;
 }
 
 /* 상단 로고 및 설명 */
 .ask-page-header {
   text-align: center;
-  margin-top: 15rem;
-  margin-bottom: 2rem;
+  height: 8rem;
 }
 
 .ask-page-logo {
-  font-size: 2.5rem;
+  font-size: 1.5rem;
   font-weight: bold;
   color: #66bb6a;
-  margin-bottom: 0.5rem;
-}
-
-.ask-page-header p {
-  font-size: 1rem;
-  color: #666;
+  line-height: 8rem;
 }
 
 /* 입력 폼 */
 .ask-page-form {
   width: 100%;
-  max-width: 800px;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
 }
 
 .ask-page-input {
+  margin-bottom: 2rem;
   display: flex;
   flex-direction: column;
 }
 
 .ask-page-input-label {
-  font-size: 1rem;
+  font-size: 0.9rem;
   margin-bottom: 0.5rem;
   color: #555;
 }
@@ -120,10 +157,9 @@ export default {};
 .ask-page-input-area {
   border: 1px solid #ddd;
   line-height: 2rem;
-  font-size: 1rem;
+  font-size: 0.85rem;
   border-radius: 4px;
   padding: 0 0.8rem;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .ask-page-input-area:focus {
@@ -137,8 +173,9 @@ export default {};
 }
 
 .ask-page-input-body {
+  font-family: 'arial';
   min-height: 200px;
-  padding: 0.8rem;
+  padding: 0.2rem 0.8rem;
   resize: none;
 }
 
@@ -149,6 +186,7 @@ export default {};
 
 /* 별명 가리기 토글 */
 .name-hide-area {
+  font-size: 0.9rem;
   margin-top: 2rem;
   text-align: center;
 }
@@ -214,9 +252,9 @@ input:checked + .toggle-switch:before {
   background-color: #66bb6a;
   color: white;
   border: none;
-  padding: 0.6rem 2rem;
-  font-size: 1rem;
-  font-weight: bold;
+  padding: 0.6rem 0;
+  width: 12rem;
+  font-size: 0.9rem;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s ease;

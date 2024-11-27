@@ -1,255 +1,278 @@
 <template>
-  <div class="class-page">
-    <!-- 수업 정보 -->
-    <section class="class-info">
-      <h1 class="class-name">수업1</h1>
-      <p class="class-professor-name">교수 이름</p>
-      <p class="class-info-detail">어떤 질문이던 자유롭게 질문하세요!</p>
-      <button class="class-ask-btn">질문하기</button>
-    </section>
+  <div class="classroom">
+    <!-- 강의실 정보 -->
+    <div class="class-info">
+      <h2 class="class-name">{{ lecture_name }}</h2>
+      <p class="class-professor">{{ professor_name }}</p>
+      <p class="class-description">어떤 질문이던 자유롭게 질문하세요!</p>
+      <button class="ask-button" @click="moveToAskPage(lecture_id)">
+        질문하기
+      </button>
+    </div>
+
+    <!-- 로딩 중 -->
+    <div v-if="loading" class="loading">
+      <div class="spinner"></div>
+      <p>로딩중...</p>
+    </div>
 
     <!-- 질문 목록 -->
-    <section class="question-list-section">
-      <h2 class="section-title">질문 목록</h2>
-      <div class="post-list">
-        <div class="post" v-for="(post, index) in posts" :key="index">
-          <div class="post-main">
-            <h3 class="post-title">{{ post.title }}</h3>
-            <p class="post-detail">{{ post.detail }}</p>
-            <div class="post-info">
-              <span class="reply-num">답변 {{ post.replies }}</span>
-              <span class="write-time">{{ post.date }}</span>
-              <span class="best-btn">좋아요 {{ post.likes }}</span>
+    <div v-else>
+      <div v-if="error" class="error-message">{{ error }}</div>
+      <div class="questionlist">
+        <div class="questionlist-title">질문 목록</div>
+        <div class="question-table">
+          <!-- 데이터 -->
+          <div
+            v-for="question in questionList"
+            :key="question.question_id"
+            class="question-row"
+            @click="enterQuestion(question)"
+          >
+            <div>
+              <div class="question-title">{{ question.title }}</div>
+              <div class="question-content">{{ question.content }}</div>
+              <div class="question-detail">
+                <div class="question-date">
+                  {{ formatDate(question.created_at) }}
+                </div>
+                <button class="like-button">
+                  <img src="../../public/image/curioius-icon.png" class="curious-icon" alt="curious" />
+                  <div>{{ question.curious }}</div>
+                </button>
+              </div>
+            </div>
+            <div class="question-points-cover">
+              <img src="../../public/image/point-background.png" class="point-background-img" alt="img" />
+              <div class="question-points">{{ question.point }}</div>
             </div>
           </div>
-          <div class="post-point">{{ post.points }}</div>
         </div>
       </div>
-      <div class="pagination">
-        <button class="page-btn" v-for="page in totalPages" :key="page">
-          {{ page }}
-        </button>
-        <button class="next-btn">다음 ></button>
-      </div>
-    </section>
-
-    <!-- 역대 개설 과목 -->
-    <section class="previous-courses">
-      <h2 class="section-title">역대 개설 과목</h2>
-      <div class="semestar-list">
-        <div
-          class="semestar"
-          v-for="course in previousCourses"
-          :key="course.semester"
-        >
-          <div class="semestar-body">
-            <span class="semestar-open-time">{{ course.semester }}</span>
-          </div>
-          <div class="semestar-footer">입장하기</div>
-        </div>
-      </div>
-    </section>
+    </div>
   </div>
 </template>
 
 <script>
+import * as lectureQuestionListApi from "@/api/board/lectureQuestionList";
+import { mapState } from "vuex";
+
 export default {
+  computed: {
+    ...mapState("auth", ["loggedIn"]),
+  },
   data() {
     return {
-      posts: [
-        {
-          title: "질문 제목 1",
-          detail: "내용 1",
-          replies: 0,
-          date: "2024-11-25",
-          likes: 24,
-          points: 100,
-        },
-        {
-          title: "질문 제목 2",
-          detail: "내용 2",
-          replies: 3,
-          date: "2024-11-24",
-          likes: 15,
-          points: 150,
-        },
-        {
-          title: "질문 제목 3",
-          detail: "내용 3",
-          replies: 1,
-          date: "2024-11-23",
-          likes: 8,
-          points: 50,
-        },
-      ],
-      totalPages: [1, 2, 3, 4, 5],
-      previousCourses: [
-        { semester: "24-1" },
-        { semester: "23-2" },
-        { semester: "23-1" },
-        { semester: "22-2" },
-      ],
+      loading: true,
+      questionList: [],
     };
+  },
+  props: {
+    lecture_id: {
+      type: String,
+      default: null,
+    },
+    lecture_name: {
+      type: String,
+      default: "강의 이름",
+    },
+    professor_name: {
+      type: String,
+      default: "교수님 이름",
+    },
+  },
+  mounted() {
+    this.fetchData();
+  },
+  methods: {
+    async fetchData() {
+      try {
+        const response = await lectureQuestionListApi.lectureQuestionList(
+          this.lecture_id
+        );
+        this.questionList = response.data.question_list;
+      } catch (err) {
+        alert("질문을 불러오는 도중 문제가 발생했습니다.");
+        console.error(err);
+      } finally {
+        this.loading = false;
+      }
+    },
+    formatDate(dateString) {
+      const options = { year: "numeric", month: "short", day: "numeric" };
+      return new Date(dateString).toLocaleDateString("ko-KR", options);
+    },
+    enterQuestion(question) {
+      this.$router.push({
+        path: `/post/${question.question_id}`,
+      });
+    },
+    moveToAskPage(lecture_id) {
+      if (this.loggedIn) {
+        this.$router.push({
+          path: `/class/${lecture_id}/ask`,
+        });
+      } else {
+        alert("먼저 로그인을 해주세요.");
+        this.$router.push({
+          path: `/signin`,
+        });
+      }
+    },
   },
 };
 </script>
 
 <style scoped>
-/* 전체 페이지 스타일 */
-.class-page {
-  font-family: Arial, sans-serif;
-  padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  background-color: white;
-}
-
-/* 수업 정보 섹션 */
+/* 강의실 정보 */
 .class-info {
   text-align: center;
   margin-bottom: 2rem;
-  padding: 2rem 0;
-  border-bottom: 1px solid #ddd;
+  padding: 2.5rem;
+  position: relative;
 }
 
 .class-name {
   font-size: 1.8rem;
   font-weight: bold;
+  margin-bottom: 1rem;
 }
 
-.class-professor-name {
-  font-size: 1rem;
-  color: grey;
+.class-professor {
+  margin-top: 0;
+  font-size: 0.9rem;
+  margin-bottom: 1.8rem;
 }
 
-.class-info-detail {
-  font-size: 1rem;
-  margin-bottom: 1.5rem;
+.class-description {
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
 }
 
-.class-ask-btn {
-  background-color: #66bb6a;
+/* 질문하기 버튼 */
+.ask-button {
+  background-color: #227c31;
   color: white;
   border: none;
-  padding: 0.8rem 1.5rem;
-  font-size: 1rem;
+  width: 13.5rem;
+  padding: 0.6rem 0;
+  border-radius: 4px;
+  font-size: 0.85rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-.class-ask-btn:hover {
+.ask-button:hover {
   background-color: #4caf50;
 }
 
-/* 질문 목록 섹션 */
-.question-list-section {
-  margin-bottom: 2rem;
+/* 로딩 애니메이션 */
+.loading {
+  text-align: center;
+  margin-top: 2rem;
+}
+.spinner {
+  margin: 0 auto;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-top: 4px solid #66bb6a;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
-.section-title {
+/* 질문 목록 */
+.question-table{
+  margin: 0 6rem;
+}
+
+.questionlist-title {
   font-size: 1.5rem;
   font-weight: bold;
-  margin-bottom: 1rem;
+  padding: 2rem 6rem;
+  border-top: 1px solid #ededed;
+  border-bottom: 1px solid #ededed;
 }
 
-.post-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+/* 질문 행 */
+.question-row {
+  font-size: 0.9rem;
+  padding: 1rem;
+  border-bottom: 1px solid #f2f2f2;
+  display: grid;
+  grid-template-columns: 9fr 1fr;
 }
 
-.post {
-  display: flex;
-  justify-content: space-between;
-  border-bottom: 1px solid #ddd;
-  padding: 1rem 0;
-}
-
-.post-main {
-  max-width: 80%;
-}
-
-.post-title {
-  font-size: 1.2rem;
+/* 질문 열 스타일 */
+.question-title {
+  flex: 3;
+  font-size: 1rem;
   font-weight: bold;
+  color: #333;
   margin-bottom: 0.5rem;
 }
 
-.post-detail {
-  font-size: 1rem;
+.question-content {
   color: grey;
-  margin-bottom: 1rem;
+  height: 3rem;
+  text-overflow: hidden;
 }
 
-.post-info {
-  font-size: 0.9rem;
+.question-detail {
   display: flex;
-  gap: 1rem;
-  color: #555;
+  font-size: 0.85rem;
 }
 
-.post-point {
-  font-size: 1.5rem;
+.question-date {
+  color: grey;
+  margin-right: 0.5rem;
+}
+
+.question-points-cover {
+  position: relative;
+}
+
+.question-points {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  font-size: 1.4rem;
   font-weight: bold;
-  color: #66bb6a;
-  text-align: right;
 }
 
-/* 페이지네이션 */
-.pagination {
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-  margin-top: 2rem;
+.point-background-img {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  height: 6rem;
 }
 
-.page-btn,
-.next-btn {
-  background-color: #f1f1f1;
-  color: #333;
+/* 궁금해요 버튼 */
+.like-button {
+  background-color: transparent;
   border: none;
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: #54c65a;
+}
+.curious-icon {
+  height: 1.1rem;
+  margin-right: 0.2rem;
 }
 
-.page-btn:hover,
-.next-btn:hover {
-  background-color: #ddd;
-}
-
-/* 역대 개설 과목 */
-.previous-courses {
-  margin-top: 2rem;
-}
-
-.semestar-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  gap: 1.5rem;
-}
-
-.semestar-body {
+/* 에러 메시지 */
+.error-message {
   text-align: center;
-  font-size: 1rem;
-  padding: 1rem 0;
-  border-bottom: 1px solid #ddd;
-}
-
-.semestar-open-time {
-  font-size: 1.2rem;
+  color: red;
   font-weight: bold;
-}
-
-.semestar-footer {
-  text-align: center;
-  padding: 0.5rem 0;
-  font-size: 0.9rem;
-  color: #66bb6a;
-  cursor: pointer;
-}
-
-.semestar-footer:hover {
-  text-decoration: underline;
+  margin-bottom: 2rem;
 }
 </style>

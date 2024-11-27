@@ -252,9 +252,9 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  padding: 2rem;
   max-width: 600px; /* 모든 필드의 최대 너비 설정 */
   margin: 0 auto; /* 가운데 정렬 */
+  margin-top: 5rem;
   box-sizing: border-box;
 }
 
@@ -269,11 +269,11 @@ export default {
   display: flex;
   flex-direction: column;
   width: 100%; /* 부모 컨테이너 기준 너비 100% */
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
 }
 
 .label {
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: bold;
   margin-bottom: 0.5rem;
   display: block;
@@ -282,17 +282,28 @@ export default {
 .input-area {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
   width: 100%; /* 버튼 포함 필드도 부모 기준 100% */
 }
 
 .input {
+  padding: 0.7rem 0.8rem;
   flex: 1; /* 입력창이 남은 공간을 차지 */
-  padding: 1rem;
-  font-size: 1rem;
+  font-size: 0.9rem;
   border: 1px solid #ddd;
   border-radius: 0.5rem;
   box-sizing: border-box;
+  margin: 0;
+}
+
+.input:focus {
+  border-color: #66bb6a;
+  outline: none;
+  box-shadow: 0 0 4px rgba(102, 187, 106, 0.4);
+}
+
+.input::placeholder {
+  color: #aaa;
 }
 
 .button {
@@ -300,8 +311,8 @@ export default {
   background-color: #66bb6a;
   color: white;
   border: none;
-  padding: 0.8rem 1rem;
-  font-size: 1rem;
+  padding: 0.7rem 1rem;
+  font-size: 0.9rem;
   border-radius: 0.5rem;
   cursor: pointer;
   white-space: nowrap;
@@ -324,7 +335,7 @@ export default {
   background-color: #66bb6a;
   color: white;
   border: none;
-  padding: 1rem;
+  padding: 0.8rem;
   font-size: 1rem;
   border-radius: 0.5rem;
   cursor: pointer;
