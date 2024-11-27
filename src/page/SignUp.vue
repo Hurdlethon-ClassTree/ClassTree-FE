@@ -204,7 +204,15 @@ export default {
       if (!this.validateForm()) return;
 
       try {
-        const response = await signupApi.signup(this.form);
+        const response = await signupApi.signup(
+          this.form.username,
+          this.form.password,
+          this.form.email,
+          this.form.schoolEmail,
+          this.form.nickName,
+          this.form.student_number,
+          this.form.major
+        );
         if (response && response.status === 200) {
           alert("회원가입에 성공하였습니다.");
           this.$router.push("/signin");
