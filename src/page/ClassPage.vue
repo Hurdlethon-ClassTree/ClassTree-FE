@@ -95,7 +95,7 @@ export default {
         const response = await lectureQuestionListApi.lectureQuestionList(
           this.lecture_id
         );
-        this.questionList = response.data.question_list;
+        this.questionList = response.data.questions;
         this.lecture_name = `${response.data.lecture.lecture_code}-${response.data.lecture.lecture_name}`;
         this.professor_name = response.data.lecture.professor;
       } catch (err) {
