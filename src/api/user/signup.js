@@ -9,6 +9,7 @@ export function signup(username, password, email, school_email, nickname, studen
     school_email : school_email,
     nickname : nickname,
     student_number : student_number,
-    major : major
+    major : major,
+    interests : []
   });
 }

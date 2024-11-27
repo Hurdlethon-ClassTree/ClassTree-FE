@@ -170,7 +170,7 @@ export default {
           alert("인증번호가 전송되었습니다.");
           this.codeSended = true;
         } else {
-          alert(response.message);
+          alert(response.data.message);
         }
       } catch (error) {
         alert("인증번호 발송 중 문제가 발생했습니다.");
@@ -194,7 +194,7 @@ export default {
           alert("인증되었습니다.");
           this.emailChecked = true;
         } else {
-          alert(response.message);
+          alert(response.data.message);
         }
       } catch (error) {
         alert("인증번호 확인 중 문제가 발생했습니다.");
@@ -213,7 +213,7 @@ export default {
           this.form.student_number,
           this.form.major
         );
-        if (response && response.status === 200) {
+        if (response && response.status === 201) {
           alert("회원가입에 성공하였습니다.");
           this.$router.push("/signin");
         } else {
