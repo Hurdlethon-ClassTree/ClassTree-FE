@@ -10,7 +10,7 @@
         <router-link to="/classlist" class="link">
           <div class="header-menu-item">개설과목</div>
         </router-link>
-        <router-link to="/signup" class="link">
+        <router-link v-if="!loggedIn" to="/signup" class="link">
           <div class="header-menu-item">가입하기</div>
         </router-link>
 
@@ -30,7 +30,11 @@
           class="search-box-input"
           placeholder="다른 사람의 질문과 강의실을 검색해 보세요!"
         />
-        <img src="../../public/image/search-icon.png" alt="img" class="search-icon" />
+        <img
+          src="../../public/image/search-icon.png"
+          alt="img"
+          class="search-icon"
+        />
       </div>
     </div>
   </header>
