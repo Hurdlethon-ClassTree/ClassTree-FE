@@ -1,7 +1,7 @@
 <template>
   <div class="classlist">
     <div>
-      <div class="classlist-title">24년 2학기 개설목록</div>
+      <div class="classlist-title">24년 2학기 개설과목</div>
     </div>
 
     <!-- 로딩 중 -->
@@ -9,23 +9,21 @@
       <div class="spinner"></div>
       <p>로딩중...</p>
     </div>
-
-    <!-- 클래스 목록 -->
-    <div v-else>
-      <div v-if="error" class="error-message">{{ error }}</div>
-      <div class="class-row">
-        <div class="class" v-for="(subject, index) in subjects" :key="index">
-          <div class="class-icon"></div>
-          <div class="class-subject-name">{{ subject.lecture_name }}</div>
-          <div class="class-professor-name">{{ subject.lecture_code }}</div>
-          <div class="class-in-btn-cover">
-            <button
-              class="class-in-btn"
-              @click="enterClass(subject.lecture_id)"
-            >
-              입장하기
-            </button>
-          </div>
+    <div v-else-if="error" class="error-message">{{ error }}</div>
+    <div v-else class="class-row">
+      <div class="class" v-for="(subject, index) in subjects" :key="index">
+        <div class="class-icon-cover">
+          <img src="../../public/image/class-icon.png" alt="img" class="class-icon" />
+        </div>
+        <div class="class-subject-name">{{ subject.lecture_name }}</div>
+        <div class="class-professor-name">{{ subject.lecture_code }}</div>
+        <div class="class-in-btn-cover">
+          <button
+            class="class-in-btn"
+            @click="enterClass(subject.lecture_id)"
+          >
+            입장하기
+          </button>
         </div>
       </div>
     </div>
@@ -60,8 +58,9 @@ export default {
       // 서버에서 데이터 가져오기
       try {
         const response = await lectureListApi.lectureList();
-        this.subjects = response.data;
+        this.subjects = response.data.lecture_list;
         console.log(this.subjects);
+
         // 데이터 캐싱
         // localStorage.setItem("cachedSubjects", JSON.stringify(this.subjects));
       } catch (err) {
@@ -72,8 +71,7 @@ export default {
       }
     },
     enterClass(lectureId) {
-      alert(`클래스 ${lectureId}에 입장합니다.`);
-      // 실제 라우팅이나 로직 추가
+      this.$router.push(`/class/${lectureId}`);
     },
   },
 };
@@ -81,14 +79,14 @@ export default {
 
 <style scoped>
 .classlist {
-  margin: 2rem;
+  margin: 3rem;
 }
 
 /* 클래스 목록 타이틀 */
 .classlist-title {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   font-weight: bold;
-  text-align: center;
+  color: rgba(34, 124, 49);
   margin-bottom: 2rem;
 }
 
@@ -118,29 +116,27 @@ export default {
 /* 클래스 목록 */
 .class-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(5, 1fr);
   margin-bottom: 2rem;
+  gap: 2rem;
 }
 
 /* 클래스 카드 */
 .class {
-  padding: 1.5rem;
+  margin: 0 0 2rem;
+  padding: 1.5rem 0;
   background-color: #f9f9f9;
-  border-radius: 0.5rem;
+  border-radius: 2rem;
   text-align: center;
   position: relative;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
 }
 .class:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 .class-icon {
-  width: 60px;
-  height: 60px;
-  background-color: white;
-  border: 2px solid #ddd;
-  border-radius: 50%;
+  width: 4rem;
+  height: 4rem;
   margin: 0 auto 1rem;
 }
 
@@ -153,7 +149,7 @@ export default {
 .class-professor-name {
   color: #666;
   font-size: 0.9rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 /* 입장 버튼 */
@@ -166,9 +162,9 @@ export default {
   color: white;
   border: none;
   padding: 0.5rem 1rem;
-  border-radius: 0.3rem;
+  border-radius: 2rem;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   transition: background-color 0.3s ease;
 }
 .class-in-btn:hover {
