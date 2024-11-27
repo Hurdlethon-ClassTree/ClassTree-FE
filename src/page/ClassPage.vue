@@ -45,7 +45,7 @@
                     class="curious-icon"
                     alt="curious"
                   />
-                  <div>{{ question.curious }}</div>
+                  <div>{{ question.curious_count }}</div>
                 </button>
               </div>
             </div>
