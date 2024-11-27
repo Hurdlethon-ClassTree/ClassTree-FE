@@ -181,9 +181,14 @@ export default {
         alert("인증번호를 입력하세요.");
         return;
       }
+      if (Number.isNaN(Number(this.form.verificationCode))) {
+        alert("인증번호 형식이 잘못되었습니다.");
+        return;
+      }
       try {
         const response = await checkCodeApi.codeVerification(
-          this.form.verificationCode
+          this.form.schoolEmail,
+          Number(this.form.verificationCode)
         );
         if (response && response.status === 200) {
           alert("인증되었습니다.");
