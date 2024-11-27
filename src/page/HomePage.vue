@@ -1,6 +1,6 @@
 <template>
   <!-- 로딩 -->
-  <div v-if="loading"></div>
+  <div v-if="loading && storeInitialized"></div>
 
   <div>
     <!-- 배너 -->
@@ -29,12 +29,14 @@
             </div>
           </div>
           <div class="button-container">
-            <button @click="loadMoreNonAnswered" class="button">+ 더보기</button>
+            <button @click="loadMoreNonAnswered" class="button">
+              + 더보기
+            </button>
           </div>
         </section>
 
         <!-- 나의 미답변 질문 목록 -->
-        <section class="content-section">
+        <section class="content-section" v-if="loggedIn">
           <h2 class="section-title">나의 미답변 질문 목록</h2>
           <p class="section-detail">당신의 답변을 기다리고 있어요!</p>
           <div class="question-list">
@@ -44,13 +46,13 @@
               class="question-item"
             >
               <div class="question-title">{{ question.title }}</div>
-              <div class="question-meta">
-                {{ question.lecture_id }} | {{  }}
-              </div>
+              <div class="question-meta">{{ question.lecture_id }} | {{}}</div>
             </div>
           </div>
           <div class="button-container">
-            <button @click="loadMoreMyQuestions" class="button">+ 더보기</button>
+            <button @click="loadMoreMyQuestions" class="button">
+              + 더보기
+            </button>
           </div>
         </section>
       </div>
@@ -94,8 +96,15 @@
 
 <script>
 import * as myunansquestionApi from "@/api/question/myunansQuestionList";
+import { mapState } from "vuex";
 
 export default {
+  computed: {
+    ...mapState("auth", ["nickname", "email", "loggedIn"]),
+    storeInitialized() {
+      return this.loggedIn !== undefined; // 상태가 정의되어 있을 때만 렌더링
+    },
+  },
   data() {
     return {
       nonAnsweredQuestions: [
@@ -126,16 +135,20 @@ export default {
       this.$router.push("/nonans");
     },
     async fetchData() {
-      try {
-        const response_myunans = await myunansquestionApi.myunansQuestionList();
-        this.myUnansweredQuestions = response_myunans.data;
-        console.log(this.myUnansweredQuestions);
-      } catch(err) {
-        alert("질문을 불러오는 도중 문제가 발생하였습니다.");
-      } finally {
-        this.loading = false;
+      console.log(this.loggedIn);
+      if (this.loggedIn != undefined && this.loggedIn == true) {
+        try {
+          const response_myunans =
+            await myunansquestionApi.myunansQuestionList();
+          this.myUnansweredQuestions = response_myunans.data;
+          console.log(this.myUnansweredQuestions);
+        } catch (err) {
+          alert("질문을 불러오는 도중 문제가 발생하였습니다.");
+        } finally {
+          this.loading = false;
+        }
       }
-    }
+    },
   },
 };
 </script>
