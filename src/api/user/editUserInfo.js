@@ -2,7 +2,7 @@ import http from '@/api/http';
 
 
 export function editUserInfo(nickname, email) {
-  return http.put('/user', {
+  return http.put('/mypage/', {
     nickname,
     email
   });
