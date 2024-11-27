@@ -97,7 +97,7 @@ export default {
           parseInt(this.reward, 10),
           this.hideName
         );
-        if (response && response.status === 200) {
+        if (response && response.status === 201) {
           alert("질문이 성공적으로 등록되었습니다.");
           // 필요한 경우 다른 페이지로 이동
           this.$router.push(`/class/${this.class_id}`);
