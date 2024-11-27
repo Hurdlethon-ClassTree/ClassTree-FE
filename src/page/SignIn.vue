@@ -79,25 +79,26 @@ export default {
   justify-content: center;
   align-items: center;
   background-color: white;
-  padding: 2rem;
+  height: 100%;
 }
 
 /* 배너 스타일 */
 .signin-banner {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .banner-title {
   font-size: 2rem;
   font-weight: bold;
   color: #333;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
 }
 
 .banner-description {
   font-size: 1rem;
   color: #666;
-  margin-top: 0.5rem;
 }
 
 /* 로그인 폼 스타일 */
@@ -144,13 +145,15 @@ input::placeholder {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
+  margin-bottom: 2rem;
+  margin-top: 0.5rem;
 }
 
 .search-account-btn {
   flex: 1;
   background-color: white;
-  border: 1px solid #666;
-  color: #666;
+  border: 1px solid #66bb6a;
+  color: #66bb6a;
   border-radius: 0.4rem;
   padding: 0.6rem 1rem;
   font-size: 0.9rem;

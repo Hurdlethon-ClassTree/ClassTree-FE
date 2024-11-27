@@ -52,11 +52,6 @@ const router = createRouter({
       props: true
     },
     {
-      path: '/searchhistory',
-      name: 'searchhistory',
-      component: () => import('../page/SearchPage.vue')
-    },
-    {
       path: '/myquestion',
       name: 'myquestion',
       component: () => import('../page/MyQuestionPage.vue')

@@ -39,7 +39,7 @@
           <p class="section-detail">당신의 답변을 기다리고 있어요!</p>
           <div class="question-list">
             <div
-              v-for="question in myUnansweredQuestions.slice(0, 2)"
+              v-for="question in myUnansweredQuestions.slice(0, 3)"
               :key="question"
               class="question-item"
             >
@@ -66,10 +66,10 @@
           >
             <div class="subject-title">{{ question.subject }}</div>
             <div class="new-question-meta">
+              <p class="new-question-code">{{ question.code }}</p>
               <p class="new-question-professor">
-                교수님: {{ question.professor }}
+                {{ question.professor }} 교수님
               </p>
-              <p class="new-question-code">코드: {{ question.code }}</p>
             </div>
           </div>
         </div>
@@ -101,6 +101,7 @@ export default {
       nonAnsweredQuestions: [
         { id: 1, title: "질문 1", subject: "과목명 1", professor: "교수님 1" },
         { id: 2, title: "질문 2", subject: "과목명 2", professor: "교수님 2" },
+        { id: 3, title: "질문 1", subject: "과목명 1", professor: "교수님 1" },
       ],
       newQuestions: [
         { id: 1, subject: "과목명 1", professor: "교수님 1", code: "코드 1" },
@@ -143,7 +144,6 @@ export default {
 /* 공통 스타일 */
 .home {
   font-family: Arial, sans-serif;
-  padding: 1rem;
 }
 
 /* 배너 */
@@ -151,8 +151,7 @@ export default {
   background-color: #66bb6a;
   color: white;
   text-align: center;
-  padding: 2rem 1rem;
-  margin-bottom: 2rem;
+  padding: 2.5rem 1rem;
 }
 
 .banner-title {
@@ -163,39 +162,41 @@ export default {
 /* 좌우 분할 섹션 */
 .split-sections {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #e7e7e7;
 }
 
 .content-section {
   flex: 1;
-  background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 1rem;
+  padding: 1.5rem;
+  padding-top: 3.5rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
+.section-title {
+  margin: 0 0.5rem 0.8rem;
+}
+
+.section-detail {
+  font-size: 0.9rem;
+  margin: 0 0.5rem 1.5rem;
+}
+
 .question-list {
   display: flex;
   flex-direction: column;
-  gap: 1rem; /* 리스트와 더보기 버튼 간 간격 */
+  font-size: 0.9rem;
 }
 
 .question-item {
   display: flex;
   justify-content: space-between;
   background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  border-radius: 8px;
   padding: 0.8rem 1rem;
-}
-
-.question-title {
-  font-size: 1rem;
-  font-weight: bold;
+  margin-bottom: 0.4rem;
+  border-radius: 0.3rem;
 }
 
 .question-meta {
@@ -212,10 +213,10 @@ export default {
 }
 
 .button {
-  background-color: #a5d6a7;
+  background-color: #66bb6a;
   color: white;
   border: none;
-  padding: 0.5rem 1.5rem; /* 얇은 버튼 */
+  padding: 0.6rem 1.5rem; /* 얇은 버튼 */
   border-radius: 20px;
   cursor: pointer;
   transition: background-color 0.3s ease;
@@ -229,26 +230,35 @@ export default {
 .new-questions-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
+  margin-top: 1rem;
 }
 
 .new-question-card {
-  background-color: #ffffff;
-  border: 1px solid #ddd;
+  background-color: #f3f3f3;
   border-radius: 8px;
   padding: 1rem;
   text-align: center;
+  margin: 0 1rem;
 }
 
 .subject-title {
   font-size: 1.2rem;
   font-weight: bold;
-  color: #333;
+  color: #000000;
 }
 
 .new-question-meta {
   font-size: 0.9rem;
-  color: #666;
+  color: #5d5d5d;
+}
+
+.new-question-code {
+  font-size: 1rem;
+  margin-top: 0.3rem;
+}
+
+.new-question-professor {
+  margin-bottom: 0.3rem;
 }
 
 /* 사용자 정보 */
@@ -256,26 +266,32 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #e8f5e9;
-  padding: 1.5rem;
-  border-radius: 8px;
+  background-color: #82b184;
+  padding: 2.5rem 3rem;
   margin-top: 2rem;
 }
 
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
 .user-avatar {
-  width: 60px;
-  height: 60px;
-  background-color: #ddd;
+  width: 5rem;
+  height: 5rem;
+  background-color: #d9d9d980;
   border-radius: 50%;
+  margin-right: 1.5rem;
 }
 
 .user-name {
   font-weight: bold;
+  color: white;
 }
 
 .user-history {
   font-size: 0.9rem;
-  color: #666;
+  color: white;
 }
 
 .profile-edit {

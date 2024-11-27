@@ -30,6 +30,7 @@
           class="search-box-input"
           placeholder="다른 사람의 질문과 강의실을 검색해 보세요!"
         />
+        <img src="../../public/image/search-icon.png" alt="img" class="search-icon" />
       </div>
     </div>
   </header>
@@ -57,9 +58,16 @@ header {
   background-color: white;
   display: flex;
   align-items: center;
-  height: 4rem;
+  height: 3.5rem;
   padding: 0 2rem;
   border-bottom: 1px solid rgb(224, 224, 224);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 20; /* 헤더가 다른 요소 위로 오도록 설정 */
+  box-sizing: border-box; /* 패딩을 포함한 크기 계산 */
+  overflow: hidden; /* header가 화면을 벗어나지 않도록 */
 }
 
 .logo {
@@ -88,21 +96,23 @@ header {
 }
 
 .header-menu-item {
-  margin-left: 1rem;
+  margin-left: 1.3rem;
   font-size: 1rem;
-  transition: color 0.3s ease;
+  font-size: 0.9rem;
 }
 
 .header-menu-item:hover {
-  color: #007bff;
+  font-weight: bold;
 }
+
+/* search box */
 
 .search-box {
   height: 2.5rem;
-  width: 18rem;
+  width: 19.5rem;
   border: 1px solid rgb(230, 230, 230);
   border-radius: 0.25rem;
-  padding-left: 0.5rem;
+  padding-left: 0.2rem;
   display: flex;
   align-items: center;
   box-sizing: border-box; /* 패딩을 포함시켜 전체 크기 계산 */
@@ -119,9 +129,15 @@ header {
 
 .search-box-input::placeholder {
   font-size: 0.8rem;
+  color: #aaa;
 }
 
 .search-box-input:focus {
   outline: none;
+}
+
+.search-icon {
+  height: 2.7rem;
+  margin-right: 0.4rem;
 }
 </style>
