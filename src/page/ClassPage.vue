@@ -3,7 +3,7 @@
     <!-- 강의실 정보 -->
     <div class="class-info">
       <h2 class="class-name">{{ lecture_name }}</h2>
-      <p class="class-professor">{{ professor_name }}</p>
+      <p class="class-professor">{{ professor_name }} 교수님</p>
       <p class="class-description">어떤 질문이던 자유롭게 질문하세요!</p>
       <button
         class="ask-button"
@@ -33,6 +33,9 @@
             @click="enterQuestion(question)"
           >
             <div>
+              <span v-if="question.checked" class="checked-badge">
+                ✅ 채택됨
+              </span>
               <div class="question-title">{{ question.title }}</div>
               <div class="question-content">{{ question.content }}</div>
               <div class="question-detail">
