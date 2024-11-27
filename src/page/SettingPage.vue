@@ -5,8 +5,8 @@
       <div class="user-info-body">
         <div class="user-icon"></div>
         <div class="user-info">
-          <div class="user-name">{{ tmpNickname }}</div>
-          <div class="user-email">{{ tmpEmail }}</div>
+          <div class="user-name">{{ userData.nickname }}</div>
+          <div class="user-email">{{ userData.school_email }}</div>
         </div>
       </div>
     </div>
@@ -23,7 +23,7 @@
             id="nickname"
             type="text"
             placeholder="별명을 입력해 주세요"
-            v-model="tmpNickname"
+            v-model="userData.nickname"
           />
         </div>
         <div class="input-group">
@@ -32,7 +32,7 @@
             id="email"
             type="email"
             placeholder="이메일을 입력해 주세요"
-            v-model="tmpEmail"
+            v-model="userData.school_email"
           />
         </div>
         <!-- 선호 과목 선택 -->
@@ -65,11 +65,13 @@
           </div>
           <div class="add-btn-wrapper">
             <button type="button" @click="addLecture" class="add-btn">
-              과목 추가
+              추가
             </button>
           </div>
+          <div class="add-btn-wrapper">
+            <button type="submit" class="modify-btn">수정하기</button>
+          </div>
         </div>
-        <button type="submit" class="modify-btn">수정하기</button>
       </form>
     </div>
   </div>
@@ -87,10 +89,12 @@ export default {
   },
   data() {
     return {
-      tmpNickname: this.nickname,
-      tmpEmail: this.email,
-      lectureList: ["Math", "Science", "History", "Art", "Music"], // 선택 가능한 과목
+      lectureList: [], // 선택 가능한 과목
       selectedLectures: [], // 사용자가 선택한 과목
+      userData: {
+        school_email: "",
+        nickname: "",
+      },
     };
   },
   mounted() {
@@ -103,12 +107,12 @@ export default {
     async saveEdit(event) {
       try {
         // API 호출
-        const response = await editApi.editUserInfo(
-          this.tmpNickname,
-          this.tmpEmail
-        );
+        this.userData.interests = this.selectedLectures;
+
+        const response = await editApi.editUserInfo(this.userData);
         if (response && response.status === 200) {
           this.fetchData();
+          alert("수정되었습니다.");
         } else {
           alert(response.message);
         }
@@ -124,8 +128,8 @@ export default {
         if (response && response.status === 200) {
           this.$store.commit("auth/setNickname", response.data.nickname);
           this.$store.commit("auth/setEmail", response.data.email);
-          this.tmpNickname = response.data.nickname;
-          this.tmpEmail = response.data.email;
+          this.userData = response.data;
+          this.selectedLectures = response.data.interests;
         } else {
           alert(response.message);
         }
@@ -298,8 +302,14 @@ button {
 
 .modify-btn {
   background-color: #66bb6a;
-  border: none;
   color: white;
+  font-size: 0.9rem;
+  padding: 0.5rem 1.5rem;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 2rem;
 }
 
 .modify-btn:hover {
@@ -353,7 +363,8 @@ select {
 }
 
 .add-btn {
-  background-color: #66bb6a;
+  width: 5rem;
+  background-color: #4c65aa;
   color: white;
   font-size: 0.9rem;
   padding: 0.5rem 1.5rem;
