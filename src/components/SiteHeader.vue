@@ -10,6 +10,9 @@
         <router-link to="/classlist" class="link">
           <div class="header-menu-item">개설과목</div>
         </router-link>
+        <router-link to="/nonans" class="link">
+          <div class="header-menu-item">미답변 질문</div>
+        </router-link>
         <router-link v-if="!loggedIn" to="/signup" class="link">
           <div class="header-menu-item">가입하기</div>
         </router-link>

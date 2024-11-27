@@ -10,14 +10,14 @@
         <div class="left-bar-menu">나의 강의실</div>
       </div>
     </router-link>
-    <router-link to="/nonans" class="link">
+    <router-link to="/nonchecked" class="link">
       <div class="left-bar-menu-cover">
         <img
           src="../../public/image/nonans-icon.png"
           class="left-bar-icon"
           alt="img"
         />
-        <div class="left-bar-menu">나의 미답변 질문</div>
+        <div class="left-bar-menu">나의 미채택 질문</div>
       </div>
     </router-link>
     <router-link to="/myquestion" class="link">

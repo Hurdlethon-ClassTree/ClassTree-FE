@@ -57,9 +57,14 @@ const router = createRouter({
       component: () => import('../page/MyQuestionPage.vue')
     },
     {
+      path: '/nonchecked',
+      name: 'noncheckedpage',
+      component: () => import('../page/NonCheckedPage.vue')
+    },
+    {
       path: '/nonans',
-      name: 'nonansquestion',
-      component: () => import('../page/NonansPage.vue')
+      name: 'nonansweredpage',
+      component: () => import('../page/NonAnsweredPage.vue')
     },
     {
       path: '/myclass',

@@ -136,7 +136,7 @@ export default {
       this.$router.push("/setting");
     },
     loadMoreMyQuestions() {
-      this.$router.push("/nonans");
+      this.$router.push("/nonchecked");
     },
     async fetchData() {
       console.log(this.loggedIn);
@@ -225,10 +225,12 @@ export default {
 .question-item {
   display: flex;
   justify-content: space-between;
-  background-color: #f9f9f9;
-  padding: 0.8rem 1rem;
-  margin-bottom: 0.4rem;
-  border-radius: 0.3rem;
+  align-items: center;
+  border: 1px solid #f9f9f9;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  transition: transform 0.2s ease;
+  font-size: 0.9rem;
 }
 
 .question-item:hover {
