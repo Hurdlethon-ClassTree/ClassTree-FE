@@ -163,7 +163,7 @@ export default {
     async getUserId() {
       try {
         const response = userApi.getInfo();
-        if (response.username === questionApi.author) {
+        if (response.username === this.question.author) {
           this.isMyQuestion = true;
         }
       } catch(err) {
