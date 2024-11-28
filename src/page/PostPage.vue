@@ -15,7 +15,11 @@
               [{{ this.question.lecture_name }}] {{ this.question.title }}
             </div>
             <div class="question-detail">
-              {{ this.question.author === "anonymous" ? "익명" : this.question.author }}
+              {{
+                this.question.author === "anonymous"
+                  ? "익명"
+                  : this.question.author
+              }}
             </div>
           </div>
         </div>
@@ -26,10 +30,14 @@
             @click="increaseCurious"
           >
             <div>나도 궁금해요!</div>
-            <img src="../../public/image/curioius-icon.png" class="curious-icon" alt="img" />
+            <img
+              src="../../public/image/curioius-icon.png"
+              class="curious-icon"
+              alt="img"
+            />
             <div>{{ this.curious }}</div>
           </button>
-          <div class="points">{{ this.question.point }}</div>
+          <div class="points">{{ this.question.point }} point</div>
         </div>
       </div>
 
@@ -46,8 +54,18 @@
               <div class="reply-user-icon"></div>
               <div>{{ answer.user_id }}</div>
             </div>
-            <button v-if="isMyQuestion" class="reply-checked-btn" :class="{ active: checkState }" @click="checked(answer.id)">
-              <img v-if="checkState" src="../../public/image/checked-icon.png" class="checked-icon" alt="check" />
+            <button
+              v-if="isMyQuestion"
+              class="reply-checked-btn"
+              :class="{ active: checkState }"
+              @click="checked(answer.id)"
+            >
+              <img
+                v-if="checkState"
+                src="../../public/image/checked-icon.png"
+                class="checked-icon"
+                alt="check"
+              />
               <div>채택하기</div>
             </button>
           </div>
@@ -62,6 +80,7 @@
         <textarea
           class="reply-input"
           ref="answer"
+          v-model="replyText"
           placeholder="내용을 입력하세요"
           spellcheck="false"
         ></textarea>
@@ -94,6 +113,7 @@ export default {
       curiousState: false,
       checkState: false,
       isMyQuestion: false,
+      replyText: "",
     };
   },
   props: {
@@ -114,16 +134,15 @@ export default {
         alert("질문을 불러오는 도중 문제가 발생하였습니다.");
       } finally {
         this.loading = false;
-        this.curious = this.question.curious;
+        this.curious = this.question.curious_count;
       }
     },
     async postAnswer() {
       if (this.loggedIn) {
-        const answer = this.$refs.answer.innerText;
         try {
           const response = await answerPost.postAnswer(
             this.question_id,
-            answer
+            this.replyText
           );
           if (!response) {
             alert("답글 게시 중 문제가 발생하였습니다.");
@@ -131,7 +150,7 @@ export default {
         } catch (err) {
           alert("답글 게시 중 문제가 발생하였습니다.");
         } finally {
-          this.$refs.answer.innerText = "";
+          this.replyText = "";
           this.fetchData();
         }
       } else {
@@ -146,6 +165,8 @@ export default {
           this.curiousState = response.data.state;
         } catch (err) {
           console.error(err);
+        } finally {
+          this.fetchData();
         }
       } else {
         alert("먼저 로그인을 해주세요.");
@@ -154,10 +175,11 @@ export default {
     async checked(answer_id) {
       try {
         checkApi.postQuestionCheck(this.question_id, answer_id);
-      } catch(err) {
+      } catch (err) {
         console.error(err);
       } finally {
         this.checkState = true;
+        this.fetchData();
       }
     },
     async getUserId() {
@@ -166,10 +188,10 @@ export default {
         if (response.username === this.question.author) {
           this.isMyQuestion = true;
         }
-      } catch(err) {
+      } catch (err) {
         console.err(err);
       }
-    }
+    },
   },
 };
 </script>
