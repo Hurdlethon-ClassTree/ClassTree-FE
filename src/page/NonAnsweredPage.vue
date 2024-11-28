@@ -74,8 +74,10 @@ export default {
     this.fetchData();
   },
   methods: {
-    questionLink(question_id) {
-      this.$router.push(`/post/${question_id}`);
+    enterQuestion(question) {
+      this.$router.push({
+        path: `/post/${question.question_id}`,
+      });
     },
     async fetchData() {
       try {

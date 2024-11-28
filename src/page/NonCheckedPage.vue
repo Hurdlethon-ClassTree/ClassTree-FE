@@ -75,9 +75,6 @@ export default {
     this.fetchData();
   },
   methods: {
-    questionLink(question_id) {
-      this.$router.push(`/post/${question_id}`);
-    },
     async fetchData() {
       try {
         const response = await myunansquestionApi.myunansQuestionList();
@@ -91,6 +88,11 @@ export default {
     formatDate(dateString) {
       const options = { year: "numeric", month: "short", day: "numeric" };
       return new Date(dateString).toLocaleDateString("ko-KR", options);
+    },
+    enterQuestion(question) {
+      this.$router.push({
+        path: `/post/${question.question_id}`,
+      });
     },
   },
 };
