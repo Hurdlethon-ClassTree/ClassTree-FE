@@ -162,7 +162,7 @@ export default {
         try {
           const response = await curiousApi.curious(this.question_id);
           this.curious = response.data.curious_count;
-          this.curiousState = response.data.state;
+          this.curiousState = response.data.boolean;
         } catch (err) {
           console.error(err);
         } finally {
@@ -281,7 +281,7 @@ export default {
 
 /* 활성화된 상태 */
 .curious-btn.active {
-  color: #4caf50; /* 초록색 텍스트 */
+  color: #04aa09; /* 초록색 텍스트 */
 }
 
 .curious-icon {
