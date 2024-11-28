@@ -40,14 +40,17 @@
 
       <!-- 답글 목록 -->
       <div class="reply-cover">
-        <div v-for="answer in question.answers" :key="answer.id" class="reply">
+        <div v-for="answer in question.answers" :key="answer.answer_id" class="reply">
           <div class="reply-header">
             <div class="reply-user-info">
               <div class="reply-user-icon"></div>
               <div>{{ answer.user_id }}</div>
             </div>
-            <button v-if="isMyQuestion" class="reply-checked-btn" :class="{ active: checkState }" @click="checked(answer.id)">
-              <img v-if="checkState" src="../../public/image/checked-icon.png" class="checked-icon" alt="check" />
+            <button v-if="isMyQuestion" class="reply-checked-btn" 
+            :class="{ 'reply-checked-btn-active': checkedId === answer.answer_id }"
+            @click="checked(answer.answer_id)"
+            >
+              <img v-if="checkedId === answer.answer_id" src="../../public/image/checked-icon.png" class="checked-icon" alt="check" />
               <div>채택하기</div>
             </button>
           </div>
@@ -92,8 +95,8 @@ export default {
       content: "",
       curious: 0,
       curiousState: false,
-      checkState: false,
       isMyQuestion: false,
+      checkedId: -1,
     };
   },
   props: {
@@ -103,6 +106,7 @@ export default {
     },
   },
   mounted() {
+    this.getUserId();
     this.fetchData();
   },
   methods: {
@@ -114,12 +118,12 @@ export default {
         alert("질문을 불러오는 도중 문제가 발생하였습니다.");
       } finally {
         this.loading = false;
-        this.curious = this.question.curious;
+        this.curious = this.question.curious_count;
       }
     },
     async postAnswer() {
       if (this.loggedIn) {
-        const answer = this.$refs.answer.innerText;
+        const answer = this.$refs.answer.value;
         try {
           const response = await answerPost.postAnswer(
             this.question_id,
@@ -131,7 +135,7 @@ export default {
         } catch (err) {
           alert("답글 게시 중 문제가 발생하였습니다.");
         } finally {
-          this.$refs.answer.innerText = "";
+          this.$refs.answer.value = "";
           this.fetchData();
         }
       } else {
@@ -157,7 +161,7 @@ export default {
       } catch(err) {
         console.error(err);
       } finally {
-        this.checkState = true;
+        this.checkedId = answer_id;
       }
     },
     async getUserId() {
@@ -255,6 +259,7 @@ export default {
   color: grey;
   background: transparent;
   border: none;
+  align-items: center;
 }
 
 /* 활성화된 상태 */
@@ -264,8 +269,7 @@ export default {
 
 .curious-icon {
   height: 1.3rem;
-  margin-left: 0.5rem;
-  margin-top: 0.05rem;
+  margin: 0.05rem 0.5rem 0;
 }
 
 .points {
@@ -307,7 +311,7 @@ export default {
   font-size: 0.85rem;
   color: grey;
 }
-.reply-checked-btn.active {
+.reply-checked-btn-active {
   border: 1px solid #66bb6a;
   color: #66bb6a;
 }
