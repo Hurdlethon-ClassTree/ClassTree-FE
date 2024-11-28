@@ -1,6 +1,6 @@
 <template>
   <!-- 로딩 -->
-  <div v-if="loading"></div>
+  <div v-if="loading && storeInitialized"></div>
 
   <div>
     <!-- 배너 -->
@@ -21,20 +21,23 @@
               v-for="question in nonAnsweredQuestions"
               :key="question.id"
               class="question-item"
+              @click="questionLink(question.question_id)"
             >
               <div class="question-title">{{ question.title }}</div>
               <div class="question-meta">
-                {{ question.subject }} | {{ question.professor }}
+                {{ question.lecture_name }} | {{ question.professor }}
               </div>
             </div>
           </div>
           <div class="button-container">
-            <button @click="loadMoreNonAnswered" class="button">+ 더보기</button>
+            <button @click="loadMoreNonAnswered" class="button">
+              + 더보기
+            </button>
           </div>
         </section>
 
         <!-- 나의 미답변 질문 목록 -->
-        <section class="content-section">
+        <section class="content-section" v-if="loggedIn">
           <h2 class="section-title">나의 미답변 질문 목록</h2>
           <p class="section-detail">당신의 답변을 기다리고 있어요!</p>
           <div class="question-list">
@@ -42,15 +45,18 @@
               v-for="question in myUnansweredQuestions.slice(0, 3)"
               :key="question"
               class="question-item"
+              @click="questionLink(question.question_id)"
             >
               <div class="question-title">{{ question.title }}</div>
               <div class="question-meta">
-                {{ question.lecture_id }} | {{  }}
+                {{ question.lecture_name }} | {{ question.professor }}
               </div>
             </div>
           </div>
           <div class="button-container">
-            <button @click="loadMoreMyQuestions" class="button">+ 더보기</button>
+            <button @click="loadMoreMyQuestions" class="button">
+              + 더보기
+            </button>
           </div>
         </section>
       </div>
@@ -60,15 +66,16 @@
         <h2 class="section-title">강의실에 새 질문이 달렸어요!</h2>
         <div class="new-questions-grid">
           <div
-            v-for="question in newQuestions"
-            :key="question.id"
+            v-for="ncwClass in newQuestionClass"
+            :key="ncwClass.id"
             class="new-question-card"
+            @click="classLink(ncwClass.lecture_id)"
           >
-            <div class="subject-title">{{ question.subject }}</div>
+            <div class="subject-title">{{ ncwClass.lecture_name }}</div>
             <div class="new-question-meta">
-              <p class="new-question-code">{{ question.code }}</p>
+              <p class="new-question-code">{{ ncwClass.lecture_code }}</p>
               <p class="new-question-professor">
-                {{ question.professor }} 교수님
+                {{ ncwClass.professor }} 교수님
               </p>
             </div>
           </div>
@@ -80,8 +87,8 @@
         <div class="user-info">
           <div class="user-avatar"></div>
           <div>
-            <h3 class="user-name">이용자 별명</h3>
-            <p class="user-history">N년 전부터 활동 중</p>
+            <h3 class="user-name">{{ nickname }}</h3>
+            <p class="user-history">3년 전부터 활동 중</p>
           </div>
         </div>
         <button @click="editProfile" class="button profile-edit">
@@ -94,20 +101,22 @@
 
 <script>
 import * as myunansquestionApi from "@/api/question/myunansQuestionList";
+import * as recentLectureApi from "@/api/board/recentLecture";
+import * as nonansApi from "@/api/board/nonanswer";
+
+import { mapState } from "vuex";
 
 export default {
+  computed: {
+    ...mapState("auth", ["nickname", "email", "loggedIn"]),
+    storeInitialized() {
+      return this.loggedIn !== undefined; // 상태가 정의되어 있을 때만 렌더링
+    },
+  },
   data() {
     return {
-      nonAnsweredQuestions: [
-        { id: 1, title: "질문 1", subject: "과목명 1", professor: "교수님 1" },
-        { id: 2, title: "질문 2", subject: "과목명 2", professor: "교수님 2" },
-        { id: 3, title: "질문 1", subject: "과목명 1", professor: "교수님 1" },
-      ],
-      newQuestions: [
-        { id: 1, subject: "과목명 1", professor: "교수님 1", code: "코드 1" },
-        { id: 2, subject: "과목명 2", professor: "교수님 2", code: "코드 2" },
-        { id: 3, subject: "과목명 3", professor: "교수님 3", code: "코드 3" },
-      ],
+      nonAnsweredQuestions: [],
+      newQuestionClass: [],
       myUnansweredQuestions: [],
       loading: true,
     };
@@ -116,26 +125,50 @@ export default {
     this.fetchData();
   },
   methods: {
+    questionLink(question_id) {
+      this.$router.push(`/post/${question_id}`);
+    },
+    classLink(lecture_id) {
+      this.$router.push(`/class/${lecture_id}`);
+    },
     loadMoreNonAnswered() {
-      alert("더 많은 답변 요청 질문을 불러옵니다.");
+      this.$router.push(`/nonans`);
     },
     editProfile() {
       this.$router.push("/setting");
     },
     loadMoreMyQuestions() {
-      this.$router.push("/nonans");
+      this.$router.push("/nonchecked");
     },
     async fetchData() {
+      console.log(this.loggedIn);
+      if (this.loggedIn != undefined && this.loggedIn == true) {
+        try {
+          const response_myunans =
+            await myunansquestionApi.myunansQuestionList();
+          this.myUnansweredQuestions = response_myunans.data;
+          console.log(this.myUnansweredQuestions);
+        } catch (err) {
+          console.error("질문을 불러오는 도중 문제가 발생하였습니다.");
+        }
+      }
+
       try {
-        const response_myunans = await myunansquestionApi.myunansQuestionList();
-        this.myUnansweredQuestions = response_myunans.data;
-        console.log(this.myUnansweredQuestions);
-      } catch(err) {
-        alert("질문을 불러오는 도중 문제가 발생하였습니다.");
+        const response_recent_lecture = await recentLectureApi.recentLecture();
+        if (response_recent_lecture && response_recent_lecture.status == 200) {
+          this.newQuestionClass = response_recent_lecture.data;
+        }
+
+        const response_nonans = await nonansApi.nonanswer();
+        if (response_nonans && response_nonans.status == 200) {
+          this.nonAnsweredQuestions = response_nonans.data.no_answer_questions;
+        }
+      } catch (err) {
+        console.error("질문을 불러오는 도중 문제가 발생하였습니다.");
       } finally {
         this.loading = false;
       }
-    }
+    },
   },
 };
 </script>
@@ -188,15 +221,22 @@ export default {
   display: flex;
   flex-direction: column;
   font-size: 0.9rem;
+  cursor: pointer;
 }
 
 .question-item {
   display: flex;
   justify-content: space-between;
-  background-color: #f9f9f9;
-  padding: 0.8rem 1rem;
-  margin-bottom: 0.4rem;
-  border-radius: 0.3rem;
+  align-items: center;
+  border: 1px solid #f9f9f9;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  transition: transform 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.question-item:hover {
+  filter: brightness(85%); /* 밝기를 85%로 낮춰 더 진하게 보이게 */
 }
 
 .question-meta {
@@ -239,6 +279,11 @@ export default {
   padding: 1rem;
   text-align: center;
   margin: 0 1rem;
+  cursor: pointer;
+}
+
+.new-question-card:hover {
+  filter: brightness(85%); /* 밝기를 85%로 낮춰 더 진하게 보이게 */
 }
 
 .subject-title {

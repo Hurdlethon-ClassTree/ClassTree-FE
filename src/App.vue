@@ -1,7 +1,7 @@
 <template>
   <SiteHeader />
   <main>
-    <LeftBar />
+    <LeftBar v-if="loggedIn" />
     <div class="router">
       <router-view />
     </div>
@@ -11,8 +11,15 @@
 <script>
 import SiteHeader from "./components/SiteHeader.vue";
 import LeftBar from "./components/LeftBar.vue";
+import { mapState } from "vuex";
 
 export default {
+  computed: {
+    ...mapState("auth", ["nickname", "email", "loggedIn"]),
+    storeInitialized() {
+      return this.loggedIn !== undefined; // 상태가 정의되어 있을 때만 렌더링
+    },
+  },
   components: {
     SiteHeader,
     LeftBar,

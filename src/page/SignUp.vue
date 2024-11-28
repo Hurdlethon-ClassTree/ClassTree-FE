@@ -170,7 +170,7 @@ export default {
           alert("인증번호가 전송되었습니다.");
           this.codeSended = true;
         } else {
-          alert(response.message);
+          alert(response.data.message);
         }
       } catch (error) {
         alert("인증번호 발송 중 문제가 발생했습니다.");
@@ -181,15 +181,20 @@ export default {
         alert("인증번호를 입력하세요.");
         return;
       }
+      if (Number.isNaN(Number(this.form.verificationCode))) {
+        alert("인증번호 형식이 잘못되었습니다.");
+        return;
+      }
       try {
         const response = await checkCodeApi.codeVerification(
-          this.form.verificationCode
+          this.form.schoolEmail,
+          Number(this.form.verificationCode)
         );
         if (response && response.status === 200) {
           alert("인증되었습니다.");
           this.emailChecked = true;
         } else {
-          alert(response.message);
+          alert(response.data.message);
         }
       } catch (error) {
         alert("인증번호 확인 중 문제가 발생했습니다.");
@@ -199,8 +204,16 @@ export default {
       if (!this.validateForm()) return;
 
       try {
-        const response = await signupApi.signup(this.form);
-        if (response && response.status === 200) {
+        const response = await signupApi.signup(
+          this.form.username,
+          this.form.password,
+          this.form.email,
+          this.form.schoolEmail,
+          this.form.nickName,
+          this.form.student_number,
+          this.form.major
+        );
+        if (response && response.status === 201) {
           alert("회원가입에 성공하였습니다.");
           this.$router.push("/signin");
         } else {

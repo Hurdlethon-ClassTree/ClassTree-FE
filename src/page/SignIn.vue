@@ -58,6 +58,8 @@ export default {
           this.$store.commit("auth/setLoggedIn", true);
           this.$store.commit("auth/setNickname", response.data.user.NICKNAME);
           this.$store.commit("auth/setEmail", response.data.user.email);
+          this.$store.commit("auth/setUserId", response.data.user.user_id);
+
           this.$router.push("/");
         } else {
           alert(response.message || "로그인에 실패했습니다.");

@@ -1,9 +1,6 @@
 import http from '@/api/http';
 
 
-export function editUserInfo(nickname, email) {
-  return http.put('/user', {
-    nickname,
-    email
-  });
+export function editUserInfo(user) {
+  return http.put('/mypage/', user);
 }

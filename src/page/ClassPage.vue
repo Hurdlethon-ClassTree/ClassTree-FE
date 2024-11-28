@@ -3,9 +3,12 @@
     <!-- 강의실 정보 -->
     <div class="class-info">
       <h2 class="class-name">{{ lecture_name }}</h2>
-      <p class="class-professor">{{ professor_name }}</p>
+      <p class="class-professor">{{ professor_name }} 교수님</p>
       <p class="class-description">어떤 질문이던 자유롭게 질문하세요!</p>
-      <button class="ask-button" @click="moveToAskPage(lecture_id)">
+      <button
+        class="ask-button"
+        @click="moveToAskPage(lecture_id, lecture_name)"
+      >
         질문하기
       </button>
     </div>
@@ -30,6 +33,9 @@
             @click="enterQuestion(question)"
           >
             <div>
+              <span v-if="question.checked" class="checked-badge">
+                ✅ 채택됨
+              </span>
               <div class="question-title">{{ question.title }}</div>
               <div class="question-content">{{ question.content }}</div>
               <div class="question-detail">
@@ -37,13 +43,21 @@
                   {{ formatDate(question.created_at) }}
                 </div>
                 <button class="like-button">
-                  <img src="../../public/image/curioius-icon.png" class="curious-icon" alt="curious" />
-                  <div>{{ question.curious }}</div>
+                  <img
+                    src="../../public/image/curioius-icon.png"
+                    class="curious-icon"
+                    alt="curious"
+                  />
+                  <div>{{ question.curious_count }}</div>
                 </button>
               </div>
             </div>
             <div class="question-points-cover">
-              <img src="../../public/image/point-background.png" class="point-background-img" alt="img" />
+              <img
+                src="../../public/image/point-background.png"
+                class="point-background-img"
+                alt="img"
+              />
               <div class="question-points">{{ question.point }}</div>
             </div>
           </div>
@@ -65,20 +79,14 @@ export default {
     return {
       loading: true,
       questionList: [],
+      lecture_name: "강의명",
+      professor_name: "교수명",
     };
   },
   props: {
     lecture_id: {
       type: String,
       default: null,
-    },
-    lecture_name: {
-      type: String,
-      default: "강의 이름",
-    },
-    professor_name: {
-      type: String,
-      default: "교수님 이름",
     },
   },
   mounted() {
@@ -90,7 +98,9 @@ export default {
         const response = await lectureQuestionListApi.lectureQuestionList(
           this.lecture_id
         );
-        this.questionList = response.data.question_list;
+        this.questionList = response.data.questions;
+        this.lecture_name = `${response.data.lecture.lecture_code}-${response.data.lecture.lecture_name}`;
+        this.professor_name = response.data.lecture.professor;
       } catch (err) {
         alert("질문을 불러오는 도중 문제가 발생했습니다.");
         console.error(err);
@@ -107,10 +117,11 @@ export default {
         path: `/post/${question.question_id}`,
       });
     },
-    moveToAskPage(lecture_id) {
+    moveToAskPage(lecture_id, lecture_name) {
       if (this.loggedIn) {
         this.$router.push({
           path: `/class/${lecture_id}/ask`,
+          query: { lecture_name },
         });
       } else {
         alert("먼저 로그인을 해주세요.");
@@ -190,7 +201,7 @@ export default {
 }
 
 /* 질문 목록 */
-.question-table{
+.question-table {
   margin: 0 6rem;
 }
 

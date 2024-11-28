@@ -22,7 +22,7 @@
           v-model="lecture_name"
           class="ask-page-input-area"
           type="text"
-          placeholder="수업명을 선택해 주세요"
+          disabled
         />
       </div>
       <div class="ask-page-input">
@@ -34,7 +34,7 @@
           placeholder="내용을 입력하세요"
           contenteditable="true"
         >
-      </textarea>
+        </textarea>
       </div>
       <div class="ask-page-input">
         <label class="ask-page-input-label">리워드 걸기</label>
@@ -69,7 +69,7 @@ import * as postApi from "@/api/question/postQuestion";
 export default {
   data() {
     return {
-      lecture_name: null,
+      lecture_name: this.$route.query.lecture_name,
       title: "", // 제목
       content: "", // 내용
       reward: "", // 리워드
@@ -97,7 +97,7 @@ export default {
           parseInt(this.reward, 10),
           this.hideName
         );
-        if (response && response.status === 200) {
+        if (response && response.status === 201) {
           alert("질문이 성공적으로 등록되었습니다.");
           // 필요한 경우 다른 페이지로 이동
           this.$router.push(`/class/${this.class_id}`);
@@ -173,7 +173,7 @@ export default {
 }
 
 .ask-page-input-body {
-  font-family: 'arial';
+  font-family: "arial";
   min-height: 200px;
   padding: 0.2rem 0.8rem;
   resize: none;

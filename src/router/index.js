@@ -1,4 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import Cookies from "js-cookie";
+import store from "@/store";
+
+
 
 const router = createRouter({
   history: createWebHistory(''),
@@ -57,9 +61,14 @@ const router = createRouter({
       component: () => import('../page/MyQuestionPage.vue')
     },
     {
+      path: '/nonchecked',
+      name: 'noncheckedpage',
+      component: () => import('../page/NonCheckedPage.vue')
+    },
+    {
       path: '/nonans',
-      name: 'nonansquestion',
-      component: () => import('../page/NonansPage.vue')
+      name: 'nonansweredpage',
+      component: () => import('../page/NonAnsweredPage.vue')
     },
     {
       path: '/myclass',
@@ -67,6 +76,15 @@ const router = createRouter({
       component: () => import('../page/MyClass.vue')
     }
   ],
+});
+
+
+// 공통 작업
+router.beforeEach(async (to, from, next) => {
+
+  await store.dispatch("auth/initialize");
+
+  next(); // 반드시 호출해야 라우팅이 진행됨
 });
 
 export default router;
