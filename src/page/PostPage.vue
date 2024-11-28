@@ -15,7 +15,11 @@
               [{{ this.question.lecture_name }}] {{ this.question.title }}
             </div>
             <div class="question-detail">
-              {{ this.question.author === "anonymous" ? "익명" : this.question.author }}
+              {{
+                this.question.author === "anonymous"
+                  ? "익명"
+                  : this.question.author
+              }}
             </div>
           </div>
         </div>
@@ -26,10 +30,14 @@
             @click="increaseCurious"
           >
             <div>나도 궁금해요!</div>
-            <img src="../../public/image/curioius-icon.png" class="curious-icon" alt="img" />
+            <img
+              src="../../public/image/curioius-icon.png"
+              class="curious-icon"
+              alt="img"
+            />
             <div>{{ this.curious }}</div>
           </button>
-          <div class="points">{{ this.question.point }}</div>
+          <div class="points">{{ this.question.point }} point</div>
         </div>
       </div>
 
@@ -46,11 +54,17 @@
               <div class="reply-user-icon"></div>
               <div>{{ answer.user_id }}</div>
             </div>
-            <button v-if="isMyQuestion" class="reply-checked-btn" 
-            :class="{ 'reply-checked-btn-active': checkedId === answer.answer_id }"
-            @click="checked(answer.answer_id)"
+            <button v-if="isMyQuestion" 
+              class="reply-checked-btn" 
+              :class="{ 'reply-checked-btn-active': checkedId === answer.answer_id }"
+              @click="checked(answer.answer_id)"
             >
-              <img v-if="checkedId === answer.answer_id" src="../../public/image/checked-icon.png" class="checked-icon" alt="check" />
+            <img
+              v-if="checkState"
+              src="../../public/image/checked-icon.png"
+              class="checked-icon"
+              alt="check"
+            />
               <div>채택하기</div>
             </button>
           </div>
@@ -65,6 +79,7 @@
         <textarea
           class="reply-input"
           ref="answer"
+          v-model="replyText"
           placeholder="내용을 입력하세요"
           spellcheck="false"
         ></textarea>
@@ -96,6 +111,7 @@ export default {
       curious: 0,
       curiousState: false,
       isMyQuestion: false,
+      replyText: "",
       checkedId: -1,
     };
   },
@@ -127,7 +143,7 @@ export default {
         try {
           const response = await answerPost.postAnswer(
             this.question_id,
-            answer
+            this.replyText
           );
           if (!response) {
             alert("답글 게시 중 문제가 발생하였습니다.");
@@ -135,7 +151,7 @@ export default {
         } catch (err) {
           alert("답글 게시 중 문제가 발생하였습니다.");
         } finally {
-          this.$refs.answer.value = "";
+          this.replyText = "";
           this.fetchData();
         }
       } else {
@@ -147,9 +163,11 @@ export default {
         try {
           const response = await curiousApi.curious(this.question_id);
           this.curious = response.data.curious_count;
-          this.curiousState = response.data.state;
+          this.curiousState = response.data.boolean;
         } catch (err) {
           console.error(err);
+        } finally {
+          this.fetchData();
         }
       } else {
         alert("먼저 로그인을 해주세요.");
@@ -158,9 +176,10 @@ export default {
     async checked(answer_id) {
       try {
         checkApi.postQuestionCheck(this.question_id, answer_id);
-      } catch(err) {
+      } catch (err) {
         console.error(err);
       } finally {
+        this.fetchData();
         this.checkedId = answer_id;
       }
     },
@@ -170,10 +189,10 @@ export default {
         if (response.username === this.question.author) {
           this.isMyQuestion = true;
         }
-      } catch(err) {
+      } catch (err) {
         console.err(err);
       }
-    }
+    },
   },
 };
 </script>
@@ -264,7 +283,7 @@ export default {
 
 /* 활성화된 상태 */
 .curious-btn.active {
-  color: #4caf50; /* 초록색 텍스트 */
+  color: #04aa09; /* 초록색 텍스트 */
 }
 
 .curious-icon {

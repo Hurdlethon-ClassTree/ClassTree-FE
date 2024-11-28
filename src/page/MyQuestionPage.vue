@@ -10,19 +10,15 @@
     </div>
 
     <!-- 질문 목록 -->
-    <div v-else class="nonans-questions">
+    <div v-else class="question-list">
       <div
-        class="nonans-question"
+        class="question-item"
         v-for="question in questionList"
         :key="question"
+        @click="questionLink(question.question_id)"
       >
-        <div class="nonans-question-body">
-          <div class="nonans-question-title">{{ question.title }}</div>
-          <div class="nonans-question-tags">
-            <div class="nonans-question-tag">{{ question.lecture_id }} ({{ question.professor }})</div>
-            <div class="nonans-question-tag">{{ question.created_at.slice(0, 10) }}</div>
-          </div>
-        </div>
+        <div class="question-title">{{ question.title }}</div>
+        <span class="subject">{{ question.lecture_name }}</span>
       </div>
     </div>
   </div>
@@ -42,6 +38,9 @@ export default {
     this.fetchData();
   },
   methods: {
+    questionLink(question_id) {
+      this.$router.push(`/post/${question_id}`);
+    },
     async fetchData() {
       try {
         const response = await myquestionApi.myQuestion();
@@ -51,8 +50,8 @@ export default {
       } finally {
         this.loading = false;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -114,6 +113,49 @@ export default {
   border-radius: 4px;
   padding: 0.2rem 0.5rem;
   white-space: nowrap;
+}
+
+/* 질문 리스트 스타일 */
+.question-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* 질문 아이템 카드 */
+.question-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #f9f9f9;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  transition: transform 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.question-item:hover {
+  filter: brightness(85%);
+}
+
+/* 질문 제목 */
+.question-title {
+  color: #333;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+/* 수업 이름 */
+.subject {
+  font-size: 0.9rem;
+  color: #666;
+  padding-left: 1rem;
+  border-left: 1px solid #a8a8a8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* 반응형 */

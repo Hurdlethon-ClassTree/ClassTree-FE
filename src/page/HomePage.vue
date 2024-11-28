@@ -48,7 +48,9 @@
               @click="questionLink(question.question_id)"
             >
               <div class="question-title">{{ question.title }}</div>
-              <div class="question-meta">{{ question.lecture_id }} | {{}}</div>
+              <div class="question-meta">
+                {{ question.lecture_name }} | {{ question.professor }}
+              </div>
             </div>
           </div>
           <div class="button-container">
