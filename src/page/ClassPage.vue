@@ -3,9 +3,12 @@
     <!-- 강의실 정보 -->
     <div class="class-info">
       <h2 class="class-name">{{ lecture_name }}</h2>
-      <p class="class-professor">교수님: {{ professor_name }}</p>
-      <p class="class-description">자유롭게 질문하세요!</p>
-      <button class="ask-button" @click="moveToAskPage(lecture_id)">
+      <p class="class-professor">{{ professor_name }} 교수님</p>
+      <p class="class-description">어떤 질문이던 자유롭게 질문하세요!</p>
+      <button
+        class="ask-button"
+        @click="moveToAskPage(lecture_id, lecture_name)"
+      >
         질문하기
       </button>
     </div>
@@ -22,13 +25,6 @@
       <div class="questionlist">
         <div class="questionlist-title">질문 목록</div>
         <div class="question-table">
-          <!-- 헤더 -->
-          <div class="question-row header">
-            <div class="question-title">질문 제목</div>
-            <div class="question-points">포인트</div>
-            <div class="question-date">작성일</div>
-            <div class="question-actions">궁금해요</div>
-          </div>
           <!-- 데이터 -->
           <div
             v-for="question in questionList"
@@ -36,12 +32,34 @@
             class="question-row"
             @click="enterQuestion(question)"
           >
-            <div class="question-title">{{ question.title }}</div>
-            <div class="question-points">+{{ question.point }}</div>
-            <div class="question-date">
-              {{ formatDate(question.created_at) }}
+            <div>
+              <span v-if="question.checked" class="checked-badge">
+                ✅ 채택됨
+              </span>
+              <div class="question-title">{{ question.title }}</div>
+              <div class="question-content">{{ question.content }}</div>
+              <div class="question-detail">
+                <div class="question-date">
+                  {{ formatDate(question.created_at) }}
+                </div>
+                <button class="like-button">
+                  <img
+                    src="../../public/image/curioius-icon.png"
+                    class="curious-icon"
+                    alt="curious"
+                  />
+                  <div>{{ question.curious_count }}</div>
+                </button>
+              </div>
             </div>
-            <button class="like-button">궁금해요 {{ question.curious }}</button>
+            <div class="question-points-cover">
+              <img
+                src="../../public/image/point-background.png"
+                class="point-background-img"
+                alt="img"
+              />
+              <div class="question-points">{{ question.point }}</div>
+            </div>
           </div>
         </div>
       </div>
@@ -61,20 +79,14 @@ export default {
     return {
       loading: true,
       questionList: [],
+      lecture_name: "강의명",
+      professor_name: "교수명",
     };
   },
   props: {
     lecture_id: {
       type: String,
       default: null,
-    },
-    lecture_name: {
-      type: String,
-      default: "강의 이름",
-    },
-    professor_name: {
-      type: String,
-      default: "교수님 이름",
     },
   },
   mounted() {
@@ -86,7 +98,9 @@ export default {
         const response = await lectureQuestionListApi.lectureQuestionList(
           this.lecture_id
         );
-        this.questionList = response.data.question_list;
+        this.questionList = response.data.questions;
+        this.lecture_name = `${response.data.lecture.lecture_code}-${response.data.lecture.lecture_name}`;
+        this.professor_name = response.data.lecture.professor;
       } catch (err) {
         alert("질문을 불러오는 도중 문제가 발생했습니다.");
         console.error(err);
@@ -103,10 +117,11 @@ export default {
         path: `/post/${question.question_id}`,
       });
     },
-    moveToAskPage(lecture_id) {
+    moveToAskPage(lecture_id, lecture_name) {
       if (this.loggedIn) {
         this.$router.push({
           path: `/class/${lecture_id}/ask`,
+          query: { lecture_name },
         });
       } else {
         alert("먼저 로그인을 해주세요.");
@@ -120,48 +135,40 @@ export default {
 </script>
 
 <style scoped>
-/* 전체 컨테이너 */
-.classroom {
-  margin: 2rem;
-}
-
 /* 강의실 정보 */
 .class-info {
   text-align: center;
   margin-bottom: 2rem;
-  padding: 1.5rem;
-  background-color: #eaffea; /* 연한 연두색 배경 */
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 2.5rem;
   position: relative;
 }
 
 .class-name {
   font-size: 1.8rem;
   font-weight: bold;
-  margin-bottom: 0.5rem;
-}
-
-.class-professor {
-  font-size: 1.2rem;
-  color: #555;
   margin-bottom: 1rem;
 }
 
+.class-professor {
+  margin-top: 0;
+  font-size: 0.9rem;
+  margin-bottom: 1.8rem;
+}
+
 .class-description {
-  font-size: 1rem;
-  color: #666;
+  font-size: 0.85rem;
   margin-bottom: 1rem;
 }
 
 /* 질문하기 버튼 */
 .ask-button {
-  background-color: #66bb6a;
+  background-color: #227c31;
   color: white;
   border: none;
-  padding: 0.8rem 1.5rem;
+  width: 13.5rem;
+  padding: 0.6rem 0;
   border-radius: 4px;
-  font-size: 1rem;
+  font-size: 0.85rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
@@ -194,40 +201,25 @@ export default {
 }
 
 /* 질문 목록 */
+.question-table {
+  margin: 0 6rem;
+}
+
 .questionlist-title {
   font-size: 1.5rem;
   font-weight: bold;
-  text-align: center;
-  margin-bottom: 1rem;
-}
-
-.question-table {
-  border-top: 1px solid #ddd;
-  margin-top: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  padding: 2rem 6rem;
+  border-top: 1px solid #ededed;
+  border-bottom: 1px solid #ededed;
 }
 
 /* 질문 행 */
 .question-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  font-size: 0.9rem;
   padding: 1rem;
-  border-bottom: 1px solid #ddd;
-  background-color: #f9f9f9;
-  transition: background-color 0.3s ease;
-}
-.question-row:hover {
-  background-color: #f0f0f0;
-}
-
-/* 질문 헤더 */
-.header {
-  font-weight: bold;
-  background-color: #f1f1f1;
-  border-bottom: 2px solid #ddd;
+  border-bottom: 1px solid #f2f2f2;
+  display: grid;
+  grid-template-columns: 9fr 1fr;
 }
 
 /* 질문 열 스타일 */
@@ -236,37 +228,55 @@ export default {
   font-size: 1rem;
   font-weight: bold;
   color: #333;
+  margin-bottom: 0.5rem;
 }
-.question-points {
-  flex: 1;
-  text-align: center;
-  font-size: 0.9rem;
-  color: #4caf50;
+
+.question-content {
+  color: grey;
+  height: 3rem;
+  text-overflow: hidden;
 }
+
+.question-detail {
+  display: flex;
+  font-size: 0.85rem;
+}
+
 .question-date {
-  flex: 1;
-  text-align: center;
-  font-size: 0.9rem;
-  color: #777;
+  color: grey;
+  margin-right: 0.5rem;
 }
-.question-actions {
-  flex: 1;
-  text-align: center;
+
+.question-points-cover {
+  position: relative;
+}
+
+.question-points {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.point-background-img {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  height: 6rem;
 }
 
 /* 궁금해요 버튼 */
 .like-button {
-  background-color: #ffeb3b;
-  color: #333;
-  padding: 0.5rem 1rem;
+  background-color: transparent;
   border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  color: #54c65a;
 }
-.like-button:hover {
-  background-color: #fdd835;
+.curious-icon {
+  height: 1.1rem;
+  margin-right: 0.2rem;
 }
 
 /* 에러 메시지 */

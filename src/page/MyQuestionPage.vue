@@ -1,27 +1,26 @@
 <template>
-  <!-- 로딩 -->
-  <div v-if="loading" class="loading">
-    <div class="spinner"></div>
-    <p>로딩중...</p>
-  </div>
-
-  <div v-else class="myquestion-container">
+  <div class="myquestion-container">
     <!-- 타이틀 -->
     <div class="myquestion-header">나의 질문 목록</div>
 
+    <!-- 로딩 -->
+    <div v-if="loading" class="loading">
+      <div class="spinner"></div>
+      <p>로딩중...</p>
+    </div>
+
     <!-- 질문 목록 -->
-    <div class="nonans-questions">
+    <div v-else class="nonans-questions">
       <div
         class="nonans-question"
         v-for="question in questionList"
         :key="question"
       >
-        <div class="nonans-question-subject-name">{{ question.lecture_id }}</div>
         <div class="nonans-question-body">
           <div class="nonans-question-title">{{ question.title }}</div>
           <div class="nonans-question-tags">
-            <div class="nonans-question-tag">{{ question.created_at.substring(0, 10) }}</div>
-            <!--<div class="nonans-question-tag">{{ question.professor }}</div>-->
+            <div class="nonans-question-tag">{{ question.lecture_id }} ({{ question.professor }})</div>
+            <div class="nonans-question-tag">{{ question.created_at.slice(0, 10) }}</div>
           </div>
         </div>
       </div>
@@ -60,39 +59,30 @@ export default {
 <style scoped>
 /* 전체 컨테이너 */
 .myquestion-container {
-  padding: 2rem;
+  margin: 3rem;
 }
 
 /* 헤더 */
 .myquestion-header {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   font-weight: bold;
-  padding-left: 1rem;
-  border-bottom: 2px solid rgb(236, 236, 236);
+  color: rgba(34, 124, 49);
   margin-bottom: 2rem;
-  color: #333;
 }
 
 /* 질문 목록 */
 .nonans-questions {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   margin: 0 auto;
   max-width: 1200px;
-}
-
-.nonans-question {
-  width: 45%;
-  margin-right: 2%;
   gap: 2rem;
-  margin-bottom: 2rem;
 }
 
 /* 질문 카드 */
 .nonans-question {
   border: 1px solid #ddd;
-  background-color: #f9f9f9;
-  border-radius: 8px;
+  border-radius: 0.3rem;
   display: flex;
   align-items: center;
   padding: 1rem;
@@ -100,27 +90,12 @@ export default {
 }
 
 .nonans-question:hover {
-  transform: translateY(-4px);
-}
-
-/* 과목명 아이콘 */
-.nonans-question-subject-name {
-  height: 60px;
-  width: 60px;
-  border-radius: 50%;
-  background-color: #d7e9d6;
-  color: #333;
-  font-size: 0.9rem;
-  text-align: center;
-  line-height: 60px;
-  font-weight: bold;
-  margin-right: 1rem;
+  transform: translateY(-1px);
 }
 
 /* 질문 제목 */
 .nonans-question-title {
-  font-size: 1rem;
-  font-weight: bold;
+  font-size: 0.9rem;
   margin-bottom: 0.5rem;
   color: #333;
 }
