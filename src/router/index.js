@@ -1,4 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import Cookies from "js-cookie";
+import store from "@/store";
+
+
 
 const router = createRouter({
   history: createWebHistory(''),
@@ -72,6 +76,15 @@ const router = createRouter({
       component: () => import('../page/MyClass.vue')
     }
   ],
+});
+
+
+// 공통 작업
+router.beforeEach(async (to, from, next) => {
+
+  await store.dispatch("auth/initialize");
+
+  next(); // 반드시 호출해야 라우팅이 진행됨
 });
 
 export default router;

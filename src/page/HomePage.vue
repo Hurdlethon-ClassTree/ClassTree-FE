@@ -132,7 +132,7 @@ export default {
       this.$router.push(`/class/${lecture_id}`);
     },
     loadMoreNonAnswered() {
-      alert("더 많은 답변 요청 질문을 불러옵니다.");
+      this.$router.push(`/nonans`);
     },
     editProfile() {
       this.$router.push("/setting");

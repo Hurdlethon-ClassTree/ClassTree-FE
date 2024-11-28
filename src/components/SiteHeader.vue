@@ -1,7 +1,11 @@
 <template>
   <header>
-    <div class="logo"></div>
-    <div class="header-title">ClassTree: 수업 기반 Q&A 게시판</div>
+    <router-link to="/" class="logo">
+      <img src="/favicon.ico" alt="Logo" class="logo-img" />
+    </router-link>
+    <router-link to="/" class="header-title"
+      >ClassTree: 수업 기반 Q&A 게시판</router-link
+    >
     <div class="left-options">
       <div class="header-menu">
         <router-link to="/" class="link">
@@ -61,6 +65,11 @@ export default {
 </script>
 
 <style scoped>
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
 header {
   background-color: white;
   display: flex;
@@ -146,5 +155,12 @@ header {
 .search-icon {
   height: 2.7rem;
   margin-right: 0.4rem;
+}
+
+.logo-img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover; /* 이미지가 로고 크기를 채우도록 설정 */
+  border-radius: 50%; /* 로고를 원형으로 표시 */
 }
 </style>

@@ -9,16 +9,40 @@
       <p>로딩중...</p>
     </div>
 
-    <!-- 질문 목록 -->
-    <div v-else class="question-list">
+    <div class="question-table">
+      <!-- 데이터 -->
       <div
-        class="question-item"
         v-for="question in questionList"
-        :key="question"
-        @click="questionLink(question.question_id)"
+        :key="question.question_id"
+        class="question-row"
+        @click="enterQuestion(question)"
       >
-        <div class="question-title">{{ question.title }}</div>
-        <span class="subject">{{ question.lecture_name }}</span>
+        <div>
+          <span v-if="question.checked" class="checked-badge"> ✅ 채택됨 </span>
+          <div class="question-title">{{ question.title }}</div>
+          <div class="question-content">{{ question.content }}</div>
+          <div class="question-detail">
+            <div class="question-date">
+              {{ formatDate(question.created_at) }}
+            </div>
+            <button class="like-button">
+              <img
+                src="../../public/image/curioius-icon.png"
+                class="curious-icon"
+                alt="curious"
+              />
+              <div>{{ question.curious_count }}</div>
+            </button>
+          </div>
+        </div>
+        <div class="question-points-cover">
+          <img
+            src="../../public/image/point-background.png"
+            class="point-background-img"
+            alt="img"
+          />
+          <div class="question-points">{{ question.point }}</div>
+        </div>
       </div>
     </div>
   </div>
@@ -51,6 +75,10 @@ export default {
         this.loading = false;
       }
     },
+    formatDate(dateString) {
+      const options = { year: "numeric", month: "short", day: "numeric" };
+      return new Date(dateString).toLocaleDateString("ko-KR", options);
+    },
   },
 };
 </script>
@@ -69,93 +97,78 @@ export default {
   margin-bottom: 2rem;
 }
 
-/* 질문 목록 */
-.nonans-questions {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  margin: 0 auto;
-  max-width: 1200px;
-  gap: 2rem;
+.questionlist-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding: 2rem 6rem;
+  border-top: 1px solid #ededed;
+  border-bottom: 1px solid #ededed;
 }
 
-/* 질문 카드 */
-.nonans-question {
-  border: 1px solid #ddd;
-  border-radius: 0.3rem;
-  display: flex;
-  align-items: center;
+/* 질문 행 */
+.question-row {
+  font-size: 0.9rem;
   padding: 1rem;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-bottom: 1px solid #f2f2f2;
+  display: grid;
+  grid-template-columns: 9fr 1fr;
 }
 
-.nonans-question:hover {
-  transform: translateY(-1px);
-}
-
-/* 질문 제목 */
-.nonans-question-title {
-  font-size: 0.9rem;
-  margin-bottom: 0.5rem;
-  color: #333;
-}
-
-/* 질문 태그 */
-.nonans-question-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.nonans-question-tag {
-  font-size: 0.8rem;
-  background-color: #eef5ee;
-  color: #666;
-  border-radius: 4px;
-  padding: 0.2rem 0.5rem;
-  white-space: nowrap;
-}
-
-/* 질문 리스트 스타일 */
-.question-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-/* 질문 아이템 카드 */
-.question-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border: 1px solid #f9f9f9;
-  border-radius: 8px;
-  padding: 0.5rem 1rem;
-  transition: transform 0.2s ease;
-  font-size: 0.9rem;
-}
-
-.question-item:hover {
-  filter: brightness(85%);
-}
-
-/* 질문 제목 */
+/* 질문 열 스타일 */
 .question-title {
+  flex: 3;
+  font-size: 1rem;
+  font-weight: bold;
   color: #333;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
+  margin-bottom: 0.5rem;
 }
 
-/* 수업 이름 */
-.subject {
-  font-size: 0.9rem;
-  color: #666;
-  padding-left: 1rem;
-  border-left: 1px solid #a8a8a8;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.question-content {
+  color: grey;
+  height: 3rem;
+  text-overflow: hidden;
+}
+
+.question-detail {
+  display: flex;
+  font-size: 0.85rem;
+}
+
+.question-date {
+  color: grey;
+  margin-right: 0.5rem;
+}
+
+.question-points-cover {
+  position: relative;
+}
+
+.question-points {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.point-background-img {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  height: 6rem;
+}
+
+/* 궁금해요 버튼 */
+.like-button {
+  background-color: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  color: #54c65a;
+}
+.curious-icon {
+  height: 1.1rem;
+  margin-right: 0.2rem;
 }
 
 /* 반응형 */

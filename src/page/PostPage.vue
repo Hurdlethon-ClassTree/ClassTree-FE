@@ -48,23 +48,30 @@
 
       <!-- 답글 목록 -->
       <div class="reply-cover">
-        <div v-for="answer in question.answers" :key="answer.answer_id" class="reply">
+        <div
+          v-for="answer in question.answers"
+          :key="answer.answer_id"
+          class="reply"
+        >
           <div class="reply-header">
             <div class="reply-user-info">
               <div class="reply-user-icon"></div>
-              <div>{{ answer.user_id }}</div>
+              <div>{{ answer.username }}</div>
             </div>
-            <button v-if="isMyQuestion" 
-              class="reply-checked-btn" 
-              :class="{ 'reply-checked-btn-active': checkedId === answer.answer_id }"
+            <button
+              v-if="isMyQuestion && user_id != answer.user_id"
+              class="reply-checked-btn"
+              :class="{
+                'reply-checked-btn-active': checkedId === answer.answer_id,
+              }"
               @click="checked(answer.answer_id)"
             >
-            <img
-              v-if="checkState"
-              src="../../public/image/checked-icon.png"
-              class="checked-icon"
-              alt="check"
-            />
+              <img
+                v-if="answer.is_checked"
+                src="../../public/image/checked-icon.png"
+                class="checked-icon"
+                alt="check"
+              />
               <div>채택하기</div>
             </button>
           </div>
@@ -101,7 +108,7 @@ import { mapState } from "vuex";
 
 export default {
   computed: {
-    ...mapState("auth", ["loggedIn"]),
+    ...mapState("auth", ["loggedIn", "user_id"]),
   },
   data() {
     return {
@@ -122,7 +129,6 @@ export default {
     },
   },
   mounted() {
-    this.getUserId();
     this.fetchData();
   },
   methods: {
@@ -130,6 +136,10 @@ export default {
       try {
         const response = await questionApi.questionDetail(this.question_id);
         this.question = response.data;
+        console.log(`${response.data.user_id} | ${this.user_id}`);
+        if (response.data.user_id == this.user_id) {
+          this.isMyQuestion = true;
+        }
       } catch (err) {
         alert("질문을 불러오는 도중 문제가 발생하였습니다.");
       } finally {
@@ -176,21 +186,12 @@ export default {
     async checked(answer_id) {
       try {
         checkApi.postQuestionCheck(this.question_id, answer_id);
+
+        this.checkedId = answer_id;
       } catch (err) {
         console.error(err);
       } finally {
         this.fetchData();
-        this.checkedId = answer_id;
-      }
-    },
-    async getUserId() {
-      try {
-        const response = userApi.getInfo();
-        if (response.username === this.question.author) {
-          this.isMyQuestion = true;
-        }
-      } catch (err) {
-        console.err(err);
       }
     },
   },
