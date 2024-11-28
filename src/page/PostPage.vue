@@ -12,10 +12,10 @@
           <div class="ask-icon">?</div>
           <div>
             <div class="question-title">
-              {{ this.question.title }}
+              [{{ this.question.lecture_name }}] {{ this.question.title }}
             </div>
             <div class="question-detail">
-              {{ this.question.lecture_name }}
+              {{ this.question.author === "anonymous" ? "익명" : this.question.author }}
             </div>
           </div>
         </div>
@@ -25,9 +25,11 @@
             :class="{ active: curiousState }"
             @click="increaseCurious"
           >
-            나도 궁금해요!
+            <div>나도 궁금해요!</div>
+            <img src="../../public/image/curioius-icon.png" class="curious-icon" alt="img" />
+            <div>{{ this.curious }}</div>
           </button>
-          <div class="points">{{ this.curious }}</div>
+          <div class="points">{{ this.question.point }}</div>
         </div>
       </div>
 
@@ -44,7 +46,10 @@
               <div class="reply-user-icon"></div>
               <div>{{ answer.user_id }}</div>
             </div>
-            <div class="reply-options">···</div>
+            <button v-if="isMyQuestion" class="reply-checked-btn" :class="{ active: checkState }" @click="checked(answer.id)">
+              <img v-if="checkState" src="../../public/image/checked-icon.png" class="checked-icon" alt="check" />
+              <div>채택하기</div>
+            </button>
           </div>
           <div class="reply-body">
             {{ answer.content }}
@@ -54,13 +59,12 @@
 
       <!-- 답글 입력 -->
       <div class="reply-input-area">
-        <div
+        <textarea
           class="reply-input"
-          contenteditable="true"
           ref="answer"
           placeholder="내용을 입력하세요"
           spellcheck="false"
-        ></div>
+        ></textarea>
         <div class="reply-input-btn-cover">
           <button class="reply-input-btn" @click="postAnswer">답글 달기</button>
         </div>
@@ -73,6 +77,8 @@
 import * as questionApi from "@/api/board/questionDetail";
 import * as answerPost from "@/api/answer/postAnswer";
 import * as curiousApi from "@/api/question/curious";
+import * as checkApi from "@/api/question/postQuestionCheck";
+import * as userApi from "@/api/user/getUserInfo";
 import { mapState } from "vuex";
 
 export default {
@@ -86,6 +92,8 @@ export default {
       content: "",
       curious: 0,
       curiousState: false,
+      checkState: false,
+      isMyQuestion: false,
     };
   },
   props: {
@@ -143,6 +151,25 @@ export default {
         alert("먼저 로그인을 해주세요.");
       }
     },
+    async checked(answer_id) {
+      try {
+        checkApi.postQuestionCheck(this.question_id, answer_id);
+      } catch(err) {
+        console.error(err);
+      } finally {
+        this.checkState = true;
+      }
+    },
+    async getUserId() {
+      try {
+        const response = userApi.getInfo();
+        if (response.username === questionApi.author) {
+          this.isMyQuestion = true;
+        }
+      } catch(err) {
+        console.err(err);
+      }
+    }
   },
 };
 </script>
@@ -223,24 +250,26 @@ export default {
 
 /* "궁금해요" 버튼 기본 스타일 */
 .curious-btn {
-  background-color: white;
-  border: 1px solid #ddd;
-  padding: 0.5rem 1rem;
+  display: flex;
   font-size: 0.9rem;
   color: grey;
-  cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  background: transparent;
+  border: none;
 }
 
 /* 활성화된 상태 */
 .curious-btn.active {
-  background-color: #d8f3dc; /* 연초록색 */
   color: #4caf50; /* 초록색 텍스트 */
-  border: 1px solid #4caf50;
+}
+
+.curious-icon {
+  height: 1.3rem;
+  margin-left: 0.5rem;
+  margin-top: 0.05rem;
 }
 
 .points {
-  padding: 0.5rem 1rem;
+  padding: 0.3rem 1rem;
   background-color: rgb(206, 233, 207);
   font-size: 0.9rem;
   text-align: center;
@@ -250,7 +279,6 @@ export default {
 /* 질문 본문 */
 .question-body {
   border: 1px solid rgba(34, 124, 49, 0.37);
-
   border-radius: 0.5rem;
   height: 10rem;
   padding: 1rem;
@@ -261,30 +289,46 @@ export default {
 .reply {
   background-color: rgba(206, 233, 207, 0.26);
   padding: 0.7rem 1rem;
-  border-radius: 0.5rem;
+  border-radius: 0.3rem;
   min-height: 5rem;
   margin-bottom: 2rem;
+  padding: 1rem;
 }
-.reply-options {
+
+.reply-checked-btn {
+  display: flex;
+  align-items: center;
   position: absolute;
-  right: 1rem;
+  right: 0;
+  border: 1px solid grey;
+  border-radius: 1rem;
+  padding: 0.2rem 0.5rem;
+  background: transparent;
+  font-size: 0.85rem;
+  color: grey;
 }
+.reply-checked-btn.active {
+  border: 1px solid #66bb6a;
+  color: #66bb6a;
+}
+.checked-icon {
+  height: 1.1rem;
+  margin-top: 0.05rem;
+  margin-right: 0.2rem;
+}
+
 .reply-body {
   margin-top: 0.2rem;
 }
+
 /* 답글 목록 */
 .reply-cover {
   margin-bottom: 2rem;
 }
 
-.reply {
-  padding: 1rem;
-  border-bottom: 1px solid #ddd;
-}
-
 .reply-header {
+  position: relative;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   margin-bottom: 0.5rem;
 }
@@ -296,9 +340,9 @@ export default {
 }
 
 .reply-user-icon {
-  width: 2rem;
-  height: 2rem;
-  background-color: rgb(212, 212, 212);
+  width: 1.4rem;
+  height: 1.4rem;
+  background-color: #e8e8e8;
   border-radius: 50%;
 }
 
@@ -311,16 +355,19 @@ export default {
 .reply-input-area {
   display: flex;
   gap: 1rem;
-  padding: 1rem;
+  padding: 0.5rem;
   border: 1px solid rgba(102, 187, 106, 0.56);
   align-items: center;
 }
 
 .reply-input {
   flex: 1;
-  font-size: 1rem;
+  font-size: 0.9rem;
   border: none;
   outline: none;
+  font-family: Arial;
+  resize: none;
+  height: 5rem;
 }
 
 .reply-input::placeholder {
@@ -331,9 +378,11 @@ export default {
   background-color: rgb(102, 187, 106);
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.85rem;
   cursor: pointer;
+  border-radius: 1rem;
+  margin-right: 0.5rem;
 }
 
 .reply-input-btn:hover {
