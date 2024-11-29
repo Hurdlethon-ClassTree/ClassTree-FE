@@ -17,7 +17,7 @@
           class="left-bar-icon"
           alt="img"
         />
-        <div class="left-bar-menu">나의 미채택 질문</div>
+        <div class="left-bar-menu">선호과목 미채택 질문</div>
       </div>
     </router-link>
     <router-link to="/myquestion" class="link">

@@ -38,7 +38,7 @@
 
         <!-- 나의 미답변 질문 목록 -->
         <section class="content-section" v-if="loggedIn">
-          <h2 class="section-title">나의 미답변 질문 목록</h2>
+          <h2 class="section-title">선호과목 미채택 질문 목록</h2>
           <p class="section-detail">당신의 답변을 기다리고 있어요!</p>
           <div class="question-list">
             <div
@@ -83,7 +83,7 @@
       </section>
 
       <!-- 사용자 정보 -->
-      <section class="user-info-section">
+      <section class="user-info-section" v-if="loggedIn">
         <div class="user-info">
           <div class="user-avatar"></div>
           <div>

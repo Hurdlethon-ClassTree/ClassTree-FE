@@ -22,9 +22,9 @@
         />
       </div>
       <div class="login-btn-cover">
-        <button type="button" class="search-account-btn">
+        <!-- <button type="button" class="search-account-btn">
           아이디/비밀번호 찾기
-        </button>
+        </button> -->
         <button class="login-btn" v-on:click="handleLogin">로그인</button>
       </div>
     </div>
@@ -53,20 +53,19 @@ export default {
       try {
         // API 호출
         const response = await loginApi.login(this.username, this.password);
-        console.log(response.data.user.NICKNAME);
+        console.log(response.data);
         if (response && response.status === 200) {
           this.$store.commit("auth/setLoggedIn", true);
-          this.$store.commit("auth/setNickname", response.data.user.NICKNAME);
-          this.$store.commit("auth/setEmail", response.data.user.email);
+          this.$store.commit("auth/setNickname", response.data.user.nickname);
+          this.$store.commit("auth/setEmail", response.data.user.school_email);
           this.$store.commit("auth/setUserId", response.data.user.user_id);
-
           this.$router.push("/");
         } else {
           alert(response.message || "로그인에 실패했습니다.");
         }
       } catch (err) {
         console.error("로그인 에러:", err);
-        alert("서버 오류가 발생했습니다. 다시 시도해 주세요.");
+        alert("err");
       }
     },
   },

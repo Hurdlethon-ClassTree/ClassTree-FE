@@ -1,7 +1,7 @@
 <template>
   <!-- 미답변 질문 목록 -->
   <div class="nonans-question">
-    <div class="main-title">나의 미채택 질문 목록</div>
+    <div class="main-title">선호과목 미채택 질문 목록</div>
     <div class="main-detail">당신의 답변을 기다리고 있어요!</div>
 
     <!-- 로딩 -->

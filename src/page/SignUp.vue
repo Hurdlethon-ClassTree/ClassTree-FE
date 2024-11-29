@@ -197,7 +197,7 @@ export default {
           alert(response.data.message);
         }
       } catch (error) {
-        alert("인증번호 확인 중 문제가 발생했습니다.");
+        alert(error);
       }
     },
     async handleSignup() {
@@ -228,7 +228,6 @@ export default {
         username,
         password,
         confirmPassword,
-        email,
         schoolEmail,
         nickName,
         student_number,
@@ -239,7 +238,6 @@ export default {
         !username ||
         !password ||
         !confirmPassword ||
-        !email ||
         !schoolEmail ||
         !nickName ||
         !student_number ||
