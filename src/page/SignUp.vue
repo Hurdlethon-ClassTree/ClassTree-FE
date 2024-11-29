@@ -39,7 +39,7 @@
       </div>
 
       <!-- Email -->
-      <div class="form-group">
+      <!-- <div class="form-group">
         <label class="label">Email</label>
         <input
           type="email"
@@ -47,7 +47,7 @@
           placeholder="알림 받을 이메일 주소를 입력해 주세요"
           class="input"
         />
-      </div>
+      </div> -->
 
       <!-- 학교 인증 -->
       <div class="form-group">

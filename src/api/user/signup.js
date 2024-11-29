@@ -11,5 +11,7 @@ export function signup(username, password, email, school_email, nickname, studen
     student_number : student_number,
     major : major,
     interests : []
+  },{
+    withCredentials: false
   });
 }

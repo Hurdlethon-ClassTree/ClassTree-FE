@@ -45,6 +45,7 @@
           placeholder="0점 이상의 포인트를 입력하세요"
         />
       </div>
+      <div>잔여 포인트: {{ leftPoint }}</div>
     </form>
 
     <!-- 별명 가리기 토글 -->
@@ -65,6 +66,7 @@
 
 <script>
 import * as postApi from "@/api/question/postQuestion";
+import * as userApi from "@/api/user/getUserInfo";
 
 export default {
   data() {
@@ -74,6 +76,7 @@ export default {
       content: "", // 내용
       reward: "", // 리워드
       hideName: false, // 별명 가리기 상태
+      leftPoint: 0,
     };
   },
   props: {
@@ -82,11 +85,33 @@ export default {
       default: null,
     },
   },
+  mounted() {
+    this.fetchData();
+  },
   methods: {
     // 질문 데이터 전송
+    async fetchData() {
+      try {
+        // API 호출
+        const response = await userApi.getInfo();
+        if (response && response.status === 200) {
+          this.leftPoint = response.data.total_point;
+        } else {
+          alert(response.message);
+        }
+      } catch (err) {
+        console.error(err);
+        alert("서버 오류가 발생했습니다. 다시 시도해 주세요.");
+      }
+    },
     async askQuestion() {
       if (!this.title.trim() || !this.content.trim() || !this.reward.trim()) {
         alert("모든 필드를 입력해 주세요.");
+        return;
+      }
+
+      if (parseInt(this.reward, 10) > this.leftPoint) {
+        alert("잔여 포인트 이상을 사용할 수 없습니다.");
         return;
       }
       try {

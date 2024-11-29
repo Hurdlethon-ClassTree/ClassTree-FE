@@ -45,7 +45,7 @@ export default {
       const response = await userApi.getInfo();
         if (response && response.status === 200) {
           commit("setNickname", response.data.nickname);
-          commit("setEmail", response.data.email);
+          commit("setEmail", response.data.school_email);
           commit("setUserId", response.data.user_id);
           commit('setLoggedIn', true);
         } else {

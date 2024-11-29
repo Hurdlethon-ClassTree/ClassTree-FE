@@ -88,7 +88,7 @@
           <div class="user-avatar"></div>
           <div>
             <h3 class="user-name">{{ nickname }}</h3>
-            <p class="user-history">3년 전부터 활동 중</p>
+            <p class="user-history">{{ email }}</p>
           </div>
         </div>
         <button @click="editProfile" class="button profile-edit">
@@ -271,6 +271,7 @@ export default {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   margin-top: 1rem;
+  gap: 2rem;
 }
 
 .new-question-card {

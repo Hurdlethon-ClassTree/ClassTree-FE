@@ -7,6 +7,7 @@
         <div class="user-info">
           <div class="user-name">{{ userData.nickname }}</div>
           <div class="user-email">{{ userData.school_email }}</div>
+          <div class="user-point">남은 포인트: {{ userData.total_point }}</div>
         </div>
       </div>
     </div>
@@ -27,12 +28,21 @@
           />
         </div>
         <div class="input-group">
-          <label for="email">이메일</label>
+          <label for="student_number">학번</label>
           <input
-            id="email"
-            type="email"
+            id="student_number"
+            type="text"
             placeholder="이메일을 입력해 주세요"
-            v-model="userData.school_email"
+            v-model="userData.student_number"
+          />
+        </div>
+        <div class="input-group">
+          <label for="major">전공</label>
+          <input
+            id="major"
+            type="text"
+            placeholder="이메일을 입력해 주세요"
+            v-model="userData.major"
           />
         </div>
         <!-- 선호 과목 선택 -->
@@ -216,6 +226,13 @@ export default {
   background-color: rgba(255, 255, 255, 0.2);
   padding: 0.2rem 0.5rem;
   border-radius: 4px;
+  margin-top: 0.5rem;
+}
+
+.user-point {
+  font-size: 0.9rem;
+  color: white;
+  padding: 0.2rem 0.5rem;
   margin-top: 0.5rem;
 }
 
